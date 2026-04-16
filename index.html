@@ -727,31 +727,16 @@ function renderHotList() {
 renderHotList();
 
 // ===== 每日焦点文章加载 =====
-function loadDailyFocus() {
+function loadDailyFocusFromCache() {
   const grid = document.getElementById('focusGrid');
   if (!grid) return;
   
-  // 从localStorage获取采集的文章
-  const focusArticles = Storage.get('dailyFocusArticles') || [];
-  
-  if (focusArticles.length === 0) {
-    // 显示默认提示
-    grid.innerHTML = `
-      <div class="focus-card" style="grid-column:1/-1;text-align:center;padding:40px;">
-        <i class="fas fa-robot" style="font-size:3rem;color:var(--primary);margin-bottom:16px;"></i>
-        <h4 style="margin-bottom:8px;">每日焦点采集系统</h4>
-        <p style="color:var(--text-light);">系统将在每天自动采集全网热门文章<br>去重筛选后呈现给您</p>
-        <p style="font-size:.8rem;color:var(--text-light);margin-top:16px;">
-          <i class="fas fa-clock"></i> 下次采集：每天 06:00
-        </p>
-      </div>
-    `;
-    return;
-  }
+  // 从ArticleCollector获取今日焦点（会自动生成）
+  const articles = ArticleCollector.getDailyFocus();
   
   // 渲染文章
-  grid.innerHTML = focusArticles.map(article => `
-    <div class="focus-card" onclick="goToArticle(${article.id})">
+  grid.innerHTML = articles.map(article => `
+    <div class="focus-card" onclick="readFocusArticle('${article.id}')">
       <span class="focus-source">${article.source}</span>
       <h4>${article.title}</h4>
       <p>${article.summary}</p>
@@ -764,7 +749,7 @@ function loadDailyFocus() {
 }
 
 // 页面加载时执行
-loadDailyFocus();
+loadDailyFocusFromCache();
 
 // ===== 打字动画 =====
 const phrases = ['数字花园', '知识宝库', '成长之路', '思想殿堂'];
