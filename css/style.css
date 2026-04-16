@@ -154,6 +154,7 @@ img { max-width: 100%; }
   padding: 8px 0;
   min-width: 160px;
   border: 1px solid var(--border);
+  z-index: 1001;
 }
 .dropdown a {
   display: flex;
@@ -165,7 +166,19 @@ img { max-width: 100%; }
   transition: background .2s;
 }
 .dropdown a:hover { background: #f5f3ff; color: var(--primary); }
-.user-menu:hover .dropdown { display: block; }
+.dropdown.active { display: block; }
+
+/* 点击头像显示菜单 */
+.user-menu .avatar { cursor: pointer; }
+
+/* 深色模式下的下拉菜单 */
+[data-theme="dark"] .dropdown {
+  background: #1e293b;
+  border-color: #334155;
+}
+[data-theme="dark"] .dropdown a:hover {
+  background: #293548;
+}
 
 .hamburger {
   display: none;
