@@ -817,7 +817,96 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('today').textContent = new Date().toLocaleDateString('zh-CN', { year:'numeric',month:'long',day:'numeric',weekday:'long' });
   loadDashboardData();
   initFileManager();
+  
+  // 启动实时刷新
+  startRealtimeRefresh();
 });
+
+// 实时刷新功能
+let refreshInterval = null;
+
+function startRealtimeRefresh() {
+  // 每30秒刷新一次数据
+  refreshInterval = setInterval(() => {
+    refreshDashboardData();
+  }, 30000);
+}
+
+function stopRealtimeRefresh() {
+  if (refreshInterval) {
+    clearInterval(refreshInterval);
+    refreshInterval = null;
+  }
+}
+
+function refreshDashboardData() {
+  // 刷新统计数据
+  const users = Storage.get('users') || [];
+  const vipUsers = users.filter(u => u.isVip).length;
+  const todayUsers = users.filter(u => {
+    const created = new Date(u.createdAt);
+    const today = new Date();
+    return created.toDateString() === today.toDateString();
+  }).length;
+  
+  // 更新统计卡片
+  const newUsersEl = document.getElementById('newUsers');
+  const vipCountEl = document.getElementById('vipCount');
+  
+  if (newUsersEl) newUsersEl.textContent = todayUsers;
+  if (vipCountEl) vipCountEl.textContent = vipUsers;
+  
+  // 刷新当前显示的表格
+  const visibleSection = document.querySelector('[id^="section-"]:not([style*="display: none"])');
+  if (visibleSection) {
+    const sectionId = visibleSection.id.replace('section-', '');
+    if (sectionId === 'users') loadUsersTable();
+    if (sectionId === 'articles') loadArticlesTable();
+    if (sectionId === 'comments') loadComments();
+    if (sectionId === 'collector') loadCollectorData();
+  }
+  
+  // 显示刷新提示
+  showRefreshIndicator();
+}
+
+function showRefreshIndicator() {
+  // 创建或更新刷新指示器
+  let indicator = document.getElementById('refreshIndicator');
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'refreshIndicator';
+    indicator.style.cssText = `
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: rgba(108,99,255,0.9);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    `;
+    document.body.appendChild(indicator);
+  }
+  
+  const now = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  indicator.textContent = `🔄 已更新 ${now}`;
+  indicator.style.opacity = '1';
+  
+  setTimeout(() => {
+    indicator.style.opacity = '0';
+  }, 2000);
+}
+
+// 手动刷新按钮
+function manualRefresh() {
+  refreshDashboardData();
+  showAlert('数据已刷新', 'success');
+}
 
 function showSection(name) {
   document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');

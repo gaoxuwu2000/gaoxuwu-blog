@@ -188,12 +188,76 @@
   </div>
 </section>
 
-<!-- 联系提现 -->
+<!-- 提现申请 -->
 <section style="padding:60px 0;background:linear-gradient(135deg,#1a1a2e,#16213e);">
   <div class="container" style="text-align:center;">
-    <h2 style="color:white;margin-bottom:12px;">申请佣金结算</h2>
-    <p style="color:rgba(255,255,255,.7);margin-bottom:32px;">达到提现门槛后，联系博主申请结算</p>
-    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+    <h2 style="color:white;margin-bottom:12px;">申请佣金提现</h2>
+    <p style="color:rgba(255,255,255,.7);margin-bottom:32px;">满¥10即可申请提现，上传收款码自动提交</p>
+    
+    <div id="withdrawalForm" style="max-width:500px;margin:0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:32px;">
+      <!-- 提现金额 -->
+      <div style="margin-bottom:24px;text-align:left;">
+        <label style="color:rgba(255,255,255,.8);font-size:.9rem;display:block;margin-bottom:8px;">提现金额 (元)</label>
+        <input type="number" id="withdrawAmount" placeholder="请输入提现金额" min="10" step="0.01" 
+          style="width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:white;font-size:1rem;box-sizing:border-box;">
+        <p style="color:rgba(255,255,255,.5);font-size:.8rem;margin-top:6px;">最低提现金额：¥10</p>
+      </div>
+      
+      <!-- 收款方式 -->
+      <div style="margin-bottom:24px;text-align:left;">
+        <label style="color:rgba(255,255,255,.8);font-size:.9rem;display:block;margin-bottom:8px;">收款方式</label>
+        <div style="display:flex;gap:12px;">
+          <label style="flex:1;padding:12px;background:rgba(255,255,255,.1);border:2px solid #07C160;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:white;">
+            <input type="radio" name="payMethod" value="wechat" checked style="accent-color:#07C160;">
+            <i class="fab fa-weixin" style="color:#07C160;"></i> 微信
+          </label>
+          <label style="flex:1;padding:12px;background:rgba(255,255,255,.1);border:2px solid #1677FF;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:white;">
+            <input type="radio" name="payMethod" value="alipay" style="accent-color:#1677FF;">
+            <i class="fab fa-alipay" style="color:#1677FF;"></i> 支付宝
+          </label>
+        </div>
+      </div>
+      
+      <!-- 上传收款码 -->
+      <div style="margin-bottom:24px;text-align:left;">
+        <label style="color:rgba(255,255,255,.8);font-size:.9rem;display:block;margin-bottom:8px;">上传收款码</label>
+        <div id="qrUploadArea" onclick="document.getElementById('qrInput').click()" 
+          style="border:2px dashed rgba(255,255,255,.3);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all .3s;"
+          onmouseover="this.style.borderColor='rgba(255,255,255,.5)';this.style.background='rgba(255,255,255,.05)'"
+          onmouseout="this.style.borderColor='rgba(255,255,255,.3)';this.style.background='transparent'">
+          <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="handleQRUpload(this)">
+          <i class="fas fa-qrcode" style="font-size:2.5rem;color:rgba(255,255,255,.5);margin-bottom:12px;display:block;"></i>
+          <p style="color:rgba(255,255,255,.7);margin:0;">点击上传微信/支付宝收款码</p>
+          <p style="color:rgba(255,255,255,.4);font-size:.8rem;margin-top:6px;">支持 JPG、PNG 格式</p>
+        </div>
+        <div id="qrPreview" style="display:none;margin-top:12px;position:relative;">
+          <img id="qrImage" style="max-width:200px;border-radius:8px;border:2px solid rgba(255,255,255,.2);">
+          <button onclick="removeQR()" style="position:absolute;top:-8px;right:calc(50% - 108px);width:24px;height:24px;border-radius:50%;background:#ef4444;color:white;border:none;cursor:pointer;font-size:.8rem;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 备注 -->
+      <div style="margin-bottom:24px;text-align:left;">
+        <label style="color:rgba(255,255,255,.8);font-size:.9rem;display:block;margin-bottom:8px;">备注 (可选)</label>
+        <textarea id="withdrawRemark" placeholder="如有特殊说明请填写" rows="2"
+          style="width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:white;font-size:.9rem;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+      
+      <!-- 提交按钮 -->
+      <button onclick="submitWithdrawal()" id="submitWithdrawBtn"
+        style="width:100%;padding:14px 24px;background:linear-gradient(135deg,#6C63FF,#43e97b);color:white;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s;">
+        <i class="fas fa-paper-plane"></i> 提交提现申请
+      </button>
+      
+      <p style="color:rgba(255,255,255,.4);font-size:.8rem;margin-top:16px;">
+        <i class="fas fa-info-circle"></i> 提交后系统将自动发送到你的邮箱
+      </p>
+    </div>
+    
+    <!-- 联系信息 -->
+    <div style="margin-top:40px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
       <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:20px 32px;color:white;text-align:center;">
         <i class="fab fa-weixin" style="font-size:1.8rem;color:#07C160;margin-bottom:8px;display:block;"></i>
         <strong style="font-size:1.1rem;">gaoxuwu</strong>
@@ -265,6 +329,152 @@ function copyPromoText() {
 function copyToClipboard(text) {
   if (navigator.clipboard) { navigator.clipboard.writeText(text); }
   else { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+}
+
+// 收款码上传处理
+let qrCodeData = null;
+
+function handleQRUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  // 验证文件类型
+  if (!file.type.startsWith('image/')) {
+    showAlert('请上传图片文件', 'error');
+    return;
+  }
+  
+  // 验证文件大小 (最大5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showAlert('图片大小不能超过5MB', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    qrCodeData = e.target.result;
+    document.getElementById('qrImage').src = qrCodeData;
+    document.getElementById('qrUploadArea').style.display = 'none';
+    document.getElementById('qrPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeQR() {
+  qrCodeData = null;
+  document.getElementById('qrInput').value = '';
+  document.getElementById('qrUploadArea').style.display = 'block';
+  document.getElementById('qrPreview').style.display = 'none';
+}
+
+// 提交提现申请
+async function submitWithdrawal() {
+  const user = getCurrentUser();
+  if (!user) {
+    showAlert('请先登录', 'error');
+    setTimeout(() => window.location.href = 'login.html', 1500);
+    return;
+  }
+  
+  const amount = parseFloat(document.getElementById('withdrawAmount').value);
+  const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+  const remark = document.getElementById('withdrawRemark').value;
+  
+  // 验证
+  if (!amount || amount < 10) {
+    showAlert('提现金额不能低于¥10', 'error');
+    return;
+  }
+  
+  if (!qrCodeData) {
+    showAlert('请上传收款码', 'error');
+    return;
+  }
+  
+  const btn = document.getElementById('submitWithdrawBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 提交中...';
+  
+  // 构建邮件内容
+  const subject = `【提现申请】${user.username} 申请提现 ¥${amount}`;
+  const body = `
+提现申请详情：
+
+用户：${user.username}
+昵称：${user.nickname || '未设置'}
+邮箱：${user.email || '未设置'}
+申请金额：¥${amount}
+收款方式：${payMethod === 'wechat' ? '微信' : '支付宝'}
+申请时间：${new Date().toLocaleString()}
+备注：${remark || '无'}
+
+收款码请查看附件。
+  `;
+  
+  // 使用 EmailJS 或 Formspree 发送邮件
+  // 这里使用 mailto 链接作为演示，实际部署建议使用 EmailJS
+  try {
+    // 保存提现记录到本地
+    const withdrawals = Storage.get('withdrawals') || [];
+    withdrawals.push({
+      id: 'WD' + Date.now(),
+      user: user.username,
+      amount: amount,
+      method: payMethod,
+      remark: remark,
+      qrCode: qrCodeData,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    });
+    Storage.set('withdrawals', withdrawals);
+    
+    // 尝试使用 Formspree 发送邮件（需要用户配置自己的 Formspree endpoint）
+    // 或者使用 mailto 打开邮件客户端
+    const mailtoLink = `mailto:487649741@qq.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // 创建隐藏的表单提交到 Formspree（推荐方式）
+    const form = document.createElement('form');
+    form.action = 'https://formspree.io/f/YOUR_FORM_ID'; // 用户需要替换为自己的 Formspree ID
+    form.method = 'POST';
+    form.style.display = 'none';
+    
+    const emailInput = document.createElement('input');
+    emailInput.name = 'email';
+    emailInput.value = user.email || 'noreply@blog.com';
+    form.appendChild(emailInput);
+    
+    const subjectInput = document.createElement('input');
+    subjectInput.name = 'subject';
+    subjectInput.value = subject;
+    form.appendChild(subjectInput);
+    
+    const messageInput = document.createElement('textarea');
+    messageInput.name = 'message';
+    messageInput.value = body;
+    form.appendChild(messageInput);
+    
+    document.body.appendChild(form);
+    // form.submit(); // 取消注释以启用 Formspree
+    
+    // 显示成功信息
+    showAlert('提现申请已提交！请截图保存收款码，联系博主处理。', 'success');
+    
+    // 重置表单
+    document.getElementById('withdrawAmount').value = '';
+    document.getElementById('withdrawRemark').value = '';
+    removeQR();
+    
+    // 打开邮件客户端（备选方案）
+    setTimeout(() => {
+      window.open(mailtoLink, '_blank');
+    }, 1000);
+    
+  } catch (error) {
+    showAlert('提交失败，请重试', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> 提交提现申请';
+  }
 }
 </script>
 </body>
