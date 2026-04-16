@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登录 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="articles.html">文章</a>
+      <a href="vip.html">会员专区</a>
+      <a href="promote.html">推广赚钱</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="register.html" class="btn-register">注册</a>
+    </div>
+  </div>
+</header>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:2.5rem;margin-bottom:8px;">✦</div>
+      <h2>欢迎回来</h2>
+      <p class="auth-sub">登录你的博客账号</p>
+    </div>
+
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label><i class="fas fa-user" style="color:var(--primary);margin-right:6px;"></i>用户名 / 手机号</label>
+        <input type="text" id="username" placeholder="请输入用户名或手机号" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock" style="color:var(--primary);margin-right:6px;"></i>密码</label>
+        <input type="password" id="password" placeholder="请输入密码" />
+      </div>
+      <div class="form-row">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input type="checkbox" /> 记住我
+        </label>
+        <a href="#">忘记密码？</a>
+      </div>
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-sign-in-alt"></i> 登录
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      还没有账号？<a href="register.html">立即注册</a>
+    </div>
+
+    <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);text-align:center;">
+      <p style="font-size:.8rem;color:var(--text-light);">忘记密码？请联系博主微信 gaoxuwu</p>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
