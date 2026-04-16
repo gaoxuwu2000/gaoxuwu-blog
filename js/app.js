@@ -624,19 +624,35 @@ const ArticleCollector = {
 
   // 采集文章（从真实数据源）
   collectArticles() {
-    // 获取今天的日期作为种子，确保同一天显示相同的文章
+    return this.collectArticlesFromSources(['tech', 'finance', 'growth', 'life'], 10);
+  },
+  
+  // 从指定源采集文章
+  collectArticlesFromSources(sources, count = 10) {
+    // 获取今天的日期作为种子
     const today = new Date().toDateString();
     const seed = this.stringToSeed(today);
     
-    // 使用种子打乱文章顺序，确保每天展示不同但稳定的内容
-    const shuffled = this.seededShuffle([...this.realArticles], seed);
+    // 过滤指定源的文章
+    let availableArticles = this.realArticles;
+    if (sources && sources.length > 0) {
+      availableArticles = this.realArticles.filter(a => sources.includes(a.cat));
+    }
     
-    // 取前10篇，确保各类别都有
-    const selected = this.selectBalancedArticles(shuffled, 10);
+    // 如果指定源没有足够文章，使用全部文章
+    if (availableArticles.length < count) {
+      availableArticles = this.realArticles;
+    }
+    
+    // 使用种子打乱文章顺序
+    const shuffled = this.seededShuffle([...availableArticles], seed);
+    
+    // 选择指定数量的文章
+    const selected = this.selectBalancedArticles(shuffled, count);
     
     // 添加唯一ID和时间戳
     return selected.map((article, index) => ({
-      id: 'focus_' + this.hashCode(article.title + today),
+      id: 'focus_' + this.hashCode(article.title + today + index),
       title: article.title,
       summary: article.summary,
       source: article.source,

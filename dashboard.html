@@ -603,43 +603,132 @@
         </table>
       </div>
       
+      <!-- 定时任务配置 -->
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-clock"></i> 定时采集设置</h4>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px;">
+            <div>
+              <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:8px;">自动采集时间</label>
+              <select id="scheduleTime" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;">
+                <option value="06:00">每天 06:00</option>
+                <option value="08:00" selected>每天 08:00</option>
+                <option value="10:00">每天 10:00</option>
+                <option value="12:00">每天 12:00</option>
+                <option value="21:00">每天 21:00</option>
+                <option value="custom">自定义</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:8px;">采集数量</label>
+              <select id="scheduleCount" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;">
+                <option value="5">5篇/天</option>
+                <option value="10" selected>10篇/天</option>
+                <option value="15">15篇/天</option>
+                <option value="20">20篇/天</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:8px;">自动发布</label>
+              <select id="scheduleAutoPublish" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;">
+                <option value="immediate">立即发布</option>
+                <option value="review" selected>待审核</option>
+                <option value="draft">保存为草稿</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="enableSchedule" checked onchange="toggleSchedule()" />
+              <span>启用定时采集</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="enableNotify" checked />
+              <span>采集完成后通知我</span>
+            </label>
+            <button class="btn-sm btn-sm-primary" onclick="saveScheduleSettings()" style="margin-left:auto;">
+              <i class="fas fa-save"></i> 保存设置
+            </button>
+          </div>
+          <div id="scheduleStatus" style="margin-top:16px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #86efac;color:#166534;font-size:.9rem;">
+            <i class="fas fa-check-circle"></i> 定时任务已启用，下次采集时间：<strong id="nextCollectTime">明天 08:00</strong>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 采集日志 -->
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-history"></i> 采集日志</h4>
+          <button class="btn-sm" style="background:#f1f5f9;color:var(--text);" onclick="clearCollectorLogs()">
+            <i class="fas fa-trash"></i> 清空日志
+          </button>
+        </div>
+        <div style="padding:0;max-height:300px;overflow-y:auto;" id="collectorLogs">
+          <table class="admin-table">
+            <thead>
+              <tr><th>时间</th><th>操作</th><th>数量</th><th>状态</th></tr>
+            </thead>
+            <tbody id="logsTable">
+              <tr>
+                <td colspan="4" style="text-align:center;color:var(--text-light);padding:20px;">暂无采集记录</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
       <div class="admin-section">
         <div class="admin-section-header">
           <h4><i class="fas fa-database"></i> 采集源配置</h4>
         </div>
         <div style="padding:24px;">
-          <div style="display:grid;gap:12px;">
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+          <div style="display:grid;gap:12px;" id="sourceList">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;" data-source="tech">
               <i class="fas fa-rss" style="color:var(--primary);"></i>
               <div style="flex:1;">
                 <div style="font-weight:600;">技术资讯</div>
                 <div style="font-size:.85rem;color:var(--text-light);">关键词: AI, 编程, 技术, 开源</div>
               </div>
-              <span class="badge badge-active">启用</span>
+              <label style="cursor:pointer;">
+                <input type="checkbox" class="source-toggle" checked data-source="tech" onchange="toggleSource('tech')" />
+                <span class="badge badge-active">启用</span>
+              </label>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;" data-source="finance">
               <i class="fas fa-rss" style="color:var(--primary);"></i>
               <div style="flex:1;">
                 <div style="font-weight:600;">财经热点</div>
                 <div style="font-size:.85rem;color:var(--text-light);">关键词: 投资, 理财, 股票, 基金</div>
               </div>
-              <span class="badge badge-active">启用</span>
+              <label style="cursor:pointer;">
+                <input type="checkbox" class="source-toggle" checked data-source="finance" onchange="toggleSource('finance')" />
+                <span class="badge badge-active">启用</span>
+              </label>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;" data-source="growth">
               <i class="fas fa-rss" style="color:var(--primary);"></i>
               <div style="flex:1;">
                 <div style="font-weight:600;">成长干货</div>
                 <div style="font-size:.85rem;color:var(--text-light);">关键词: 效率, 习惯, 学习, 思维</div>
               </div>
-              <span class="badge badge-active">启用</span>
+              <label style="cursor:pointer;">
+                <input type="checkbox" class="source-toggle" checked data-source="growth" onchange="toggleSource('growth')" />
+                <span class="badge badge-active">启用</span>
+              </label>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;" data-source="life">
               <i class="fas fa-rss" style="color:var(--primary);"></i>
               <div style="flex:1;">
                 <div style="font-weight:600;">生活方式</div>
                 <div style="font-size:.85rem;color:var(--text-light);">关键词: 健康, 旅行, 美食, 家居</div>
               </div>
-              <span class="badge badge-active">启用</span>
+              <label style="cursor:pointer;">
+                <input type="checkbox" class="source-toggle" checked data-source="life" onchange="toggleSource('life')" />
+                <span class="badge badge-active">启用</span>
+              </label>
             </div>
           </div>
         </div>
@@ -1539,14 +1628,213 @@ function publishAllCollected() {
 
 function saveCollectorSettings() {
   const settings = {
-    collectTime: document.getElementById('collectTime').value,
-    collectCount: document.getElementById('collectCount').value,
-    autoPublish: document.getElementById('autoPublish').checked,
-    needReview: document.getElementById('needReview').checked
+    collectTime: document.getElementById('collectTime')?.value || '08:00',
+    collectCount: document.getElementById('collectCount')?.value || '10',
+    autoPublish: document.getElementById('autoPublish')?.checked || false,
+    needReview: document.getElementById('needReview')?.checked || false
   };
   Storage.set('collectorSettings', settings);
   showAlert('采集设置已保存', 'success');
 }
+
+// ==================== 定时采集功能 ====================
+
+// 保存定时设置
+function saveScheduleSettings() {
+  const settings = {
+    time: document.getElementById('scheduleTime').value,
+    count: document.getElementById('scheduleCount').value,
+    autoPublish: document.getElementById('scheduleAutoPublish').value,
+    enabled: document.getElementById('enableSchedule').checked,
+    notify: document.getElementById('enableNotify').checked,
+    sources: getEnabledSources()
+  };
+  Storage.set('scheduleSettings', settings);
+  updateNextCollectTime();
+  showAlert('定时采集设置已保存', 'success');
+  addCollectorLog('设置更新', 0, '成功');
+}
+
+// 获取启用的采集源
+function getEnabledSources() {
+  const sources = [];
+  document.querySelectorAll('.source-toggle:checked').forEach(cb => {
+    sources.push(cb.dataset.source);
+  });
+  return sources;
+}
+
+// 切换采集源
+function toggleSource(source) {
+  const checkbox = document.querySelector(`.source-toggle[data-source="${source}"]`);
+  const badge = checkbox?.nextElementSibling;
+  if (badge) {
+    badge.textContent = checkbox.checked ? '启用' : '停用';
+    badge.className = checkbox.checked ? 'badge badge-active' : 'badge';
+    badge.style.background = checkbox.checked ? '' : '#e2e8f0';
+    badge.style.color = checkbox.checked ? '' : '#64748b';
+  }
+  saveScheduleSettings();
+}
+
+// 切换定时任务开关
+function toggleSchedule() {
+  const enabled = document.getElementById('enableSchedule').checked;
+  const statusEl = document.getElementById('scheduleStatus');
+  if (statusEl) {
+    if (enabled) {
+      statusEl.style.background = '#f0fdf4';
+      statusEl.style.borderColor = '#86efac';
+      statusEl.style.color = '#166534';
+      updateNextCollectTime();
+    } else {
+      statusEl.style.background = '#fef2f2';
+      statusEl.style.borderColor = '#fecaca';
+      statusEl.style.color = '#991b1b';
+      statusEl.innerHTML = '<i class="fas fa-pause-circle"></i> 定时任务已暂停';
+    }
+  }
+}
+
+// 更新下次采集时间
+function updateNextCollectTime() {
+  const time = document.getElementById('scheduleTime').value;
+  const now = new Date();
+  const [hours, minutes] = time.split(':');
+  let nextTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+  
+  if (nextTime <= now) {
+    nextTime.setDate(nextTime.getDate() + 1);
+  }
+  
+  const timeStr = nextTime.toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const el = document.getElementById('nextCollectTime');
+  if (el) el.textContent = timeStr;
+}
+
+// 添加采集日志
+function addCollectorLog(action, count, status) {
+  const logs = Storage.get('collectorLogs') || [];
+  logs.unshift({
+    time: new Date().toLocaleString('zh-CN'),
+    action: action,
+    count: count,
+    status: status
+  });
+  // 只保留最近50条
+  if (logs.length > 50) logs.pop();
+  Storage.set('collectorLogs', logs);
+  loadCollectorLogs();
+}
+
+// 加载采集日志
+function loadCollectorLogs() {
+  const logs = Storage.get('collectorLogs') || [];
+  const tbody = document.getElementById('logsTable');
+  if (!tbody) return;
+  
+  if (logs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-light);padding:20px;">暂无采集记录</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = logs.map(log => `
+    <tr>
+      <td>${log.time}</td>
+      <td>${log.action}</td>
+      <td>${log.count > 0 ? log.count + '篇' : '-'}</td>
+      <td><span class="badge ${log.status === '成功' ? 'badge-active' : log.status === '失败' ? 'badge' : 'badge-pending'}" style="background:${log.status === '成功' ? '#dcfce7' : log.status === '失败' ? '#fee2e2' : '#fef9c3'};color:${log.status === '成功' ? '#16a34a' : log.status === '失败' ? '#dc2626' : '#ca8a04'};">${log.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+// 清空日志
+function clearCollectorLogs() {
+  if (!confirm('确定清空所有采集日志？')) return;
+  Storage.set('collectorLogs', []);
+  loadCollectorLogs();
+  showAlert('日志已清空', 'success');
+}
+
+// 初始化定时任务检查
+function initScheduleChecker() {
+  const settings = Storage.get('scheduleSettings');
+  if (!settings || !settings.enabled) return;
+  
+  // 每分钟检查一次是否需要采集
+  setInterval(() => {
+    checkAndRunSchedule();
+  }, 60000);
+  
+  // 立即检查一次
+  checkAndRunSchedule();
+}
+
+// 检查并执行定时采集
+function checkAndRunSchedule() {
+  const settings = Storage.get('scheduleSettings');
+  if (!settings || !settings.enabled) return;
+  
+  const now = new Date();
+  const currentTime = now.toTimeString().slice(0, 5);
+  
+  // 检查是否到达采集时间
+  if (currentTime === settings.time) {
+    const lastCollect = Storage.get('lastScheduledCollect');
+    const today = now.toDateString();
+    
+    // 确保每天只采集一次
+    if (lastCollect !== today) {
+      runScheduledCollection(settings);
+      Storage.set('lastScheduledCollect', today);
+    }
+  }
+}
+
+// 执行定时采集
+function runScheduledCollection(settings) {
+  addCollectorLog('定时采集开始', 0, '进行中');
+  
+  try {
+    // 执行采集
+    const articles = ArticleCollector.collectArticlesFromSources(settings.sources, parseInt(settings.count));
+    
+    // 保存采集结果
+    Storage.set('dailyFocusArticles', articles);
+    
+    // 根据设置自动发布
+    let publishedCount = 0;
+    if (settings.autoPublish === 'immediate') {
+      articles.forEach(article => {
+        ArticleCollector.publishToBlog(article);
+        publishedCount++;
+      });
+    } else if (settings.autoPublish === 'draft') {
+      // 保存为草稿（待实现）
+    }
+    
+    addCollectorLog('定时采集完成', articles.length, '成功');
+    
+    // 刷新显示
+    loadCollectorData();
+    
+    // 通知（如果启用）
+    if (settings.notify) {
+      showAlert(`定时采集完成！共采集 ${articles.length} 篇文章${publishedCount > 0 ? `，已自动发布 ${publishedCount} 篇` : ''}`, 'success');
+    }
+    
+  } catch (error) {
+    addCollectorLog('定时采集失败', 0, '失败');
+    console.error('定时采集失败:', error);
+  }
+}
+
+// 页面加载时初始化
+setTimeout(() => {
+  loadCollectorLogs();
+  updateNextCollectTime();
+  initScheduleChecker();
+}, 1000);
 </script>
 </body>
 </html>
