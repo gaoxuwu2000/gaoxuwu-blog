@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文章详情 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="articles.html" class="active">文章</a>
+      <a href="vip.html">会员专区</a>
+      <a href="about.html">关于</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-login" id="loginBtn">登录</a>
+      <a href="register.html" class="btn-register">注册</a>
+      <div class="user-menu hidden" id="userMenu">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu" class="avatar" id="avatarImg" />
+        <div class="dropdown" id="userDropdown">
+          <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> 控制台</a>
+          <a href="vip.html"><i class="fas fa-crown"></i> 会员中心</a>
+          <a href="promote.html"><i class="fas fa-gift"></i> 邀请有礼 <span style="font-size:.7rem;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 6px;border-radius:10px;">赚</span></a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+        </div>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</header>
+
+<div id="articlePage">
+  <!-- 由JS动态渲染 -->
+</div>
+
+<!-- 付费弹窗 -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('payModal')">×</button>
+    <div class="modal-header">
+      <i class="fas fa-crown"></i>
+      <h3>升级会员解锁全文</h3>
+    </div>
+    <div class="modal-body">
+      <p class="pay-tip">该文章为会员专属内容，请联系博主付款开通会员：</p>
+      <div class="pay-methods">
+        <div class="pay-method">
+          <i class="fab fa-weixin" style="color:#07C160"></i>
+          <span>微信：<strong>gaoxuwu</strong></span>
+        </div>
+        <div class="pay-method">
+          <i class="fas fa-phone" style="color:#1890ff"></i>
+          <span>电话：<strong>15312636073</strong></span>
+        </div>
+      </div>
+      <div class="pay-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=微信:gaoxuwu,手机:15312636073" alt="联系二维码" />
+        <p>扫码添加微信</p>
+      </div>
+      <p class="pay-note">✅ 月度会员 ¥38 | 年度会员 ¥298，付款发凭证即开通</p>
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+<script src="js/app.js"></script>
+<script>
+// 文章内容存储（支持从localStorage读取后台发布的内容）
+const BUILTIN_CONTENTS = {
+  1: {
+    content: `
+<h2>前言</h2>
+<p>技术的世界变化飞快。2026年，随着AI大模型的普及，很多传统技术岗位正在被重塑。但这并不意味着程序员失业——恰恰相反，掌握正确技能的开发者，薪资正在水涨船高。</p>
+
+<h2>1. AI提示工程（Prompt Engineering）</h2>
+<p>会用AI已经不够了，你要<strong>会用好AI</strong>。Prompt Engineering不是简单地"写问题"，而是一套完整的方法论：如何设计角色、如何拆解任务、如何检验输出质量。这项技能在2026年已经成为各大公司的基础要求。</p>
+
+<h2>2. 全栈开发（Next.js / React生态）</h2>
+<p>前后端一体化的趋势越来越明显。Next.js 15带来的Server Actions让全栈开发变得前所未有的流畅。掌握这套技术栈，你一个人就能做出原本需要团队才能完成的产品。</p>
+
+<blockquote>
+"最好的程序员不是写最多代码的那个，而是能用最少代码解决最多问题的那个。"
+</blockquote>
+
+<h2>3. 数据分析与可视化</h2>
+<p>Python + Pandas + Matplotlib 已经是数据分析的标配。但2026年，用AI辅助写数据分析代码，再配合Streamlit快速搭建数据看板，才是最高效的工作方式。</p>
+
+<h2>4. 云原生与Serverless</h2>
+<p>传统的服务器运维正在消亡。Vercel、Cloudflare Workers、AWS Lambda——这些Serverless平台让你专注于业务逻辑，把运维的脏活累活都甩出去。</p>
+
+<h2>5. 移动端开发（React Native / Flutter）</h2>
+<p>一套代码，iOS + Android双端覆盖。Expo + React Native在2025年后已经非常成熟，配合AI工具，一个人两周做出一个完整App不是梦话。</p>
+
+<h2>总结</h2>
+<p>选择技术栈不是跟风，而是要结合自己的目标：想独立创业？选全栈+AI。想进大厂？专精某一领域。想自由职业？学移动端开发，接项目最容易。</p>
+<p>记住，技术只是工具。重要的是你用这些工具创造了什么价值。</p>
+    `
+  },
+  2: {
+    content: `
+<h2>理财的本质</h2>
+<p>很多人觉得理财是有钱人的事。这是一个巨大的误区。理财的本质，是让时间成为你的朋友，而不是敌人。越早开始，复利的效果越惊人。</p>
+
+<h2>第一步：搞清楚自己的现金流</h2>
+<p>在投资之前，先做好一件事：记账。用任何一款记账App，把每个月的收入和支出搞清楚。你会发现，很多钱是在不知不觉中"漏掉"的。</p>
+
+<h2>第二步：建立应急基金</h2>
+<p>在开始投资之前，先准备3-6个月的生活费作为应急基金，存在货币基金（余额宝、微信零钱通）里。这是你的安全垫，保证你在遭遇突发情况时不用被迫低价卖出资产。</p>
+
+<h2>第三步：认识复利的力量</h2>
+<p>如果你每月定投1000元，年化收益8%，30年后你会有多少钱？答案是：超过150万。而你实际投入的只有36万。多出来的100多万，就是复利的魔力。</p>
+
+<blockquote>
+"复利是世界第八大奇迹。理解它的人赚取它；不理解它的人支付它。" — 爱因斯坦
+</blockquote>
+
+<h2>第四步：从指数基金开始</h2>
+<p>对于大多数普通人，沪深300指数基金是最好的起点。长期来看，它跑赢90%以上的主动管理基金。费率低、透明度高、不需要你每天盯盘。</p>
+
+<p>每月固定日期定投，无论涨跌都不要停止。这叫做"定投平均成本法"，是最适合普通工薪族的投资策略。</p>
+
+<h2>小结</h2>
+<p>记账→存应急金→定投指数基金，就是最简单、最适合普通人的理财路径。不要追热点，不要听消息，坚持就是最好的策略。</p>
+    `
+  },
+  3: {
+    content: `
+<h2>为什么是这本书？</h2>
+<p>《高效能人士的7个习惯》是管理学经典，但很多人读完之后什么都没改变。这很正常——因为知道和做到之间，有一条巨大的鸿沟。</p>
+<p>我用6个月时间，把这7个习惯一条一条地实践，有的效果显著，有的要结合自己的实际来调整。以下是我的真实体验。</p>
+
+<h2>习惯一：积极主动</h2>
+<p>这个习惯改变了我最多。以前遇到问题，我的第一反应是抱怨环境、推卸责任。实践这个习惯之后，我开始问自己："这件事，我能控制什么？"把精力放在自己能影响的事情上，焦虑明显减少了。</p>
+
+<h2>习惯二：以终为始</h2>
+<p>每天早上花5分钟想一件事："今天结束时，我希望完成什么？"这个简单的习惯让我少做了很多无效的忙碌。</p>
+
+<h2>习惯三：要事第一</h2>
+<p>最难坚持的一个。我们总是被紧急但不重要的事拖着跑——各种消息、会议、请求。真正重要的事，往往不紧急，所以总被推迟。我现在每天早上把最重要的一件事先做完，其他的再说。</p>
+
+<blockquote>
+重要的事情从来不紧急，紧急的事情很少重要。
+</blockquote>
+
+<h2>实践总结</h2>
+<p>这本书不是魔法，读完不会立刻改变你的人生。但如果你愿意挑一两个习惯认真践行，3个月后你会发现自己真的不一样了。</p>
+<p>我的建议：从"积极主动"和"要事第一"开始。这两个习惯投入产出比最高。</p>
+    `
+  },
+  4: {
+    content: `
+<h2>写在前面</h2>
+<p>2026年，AI已经不再是"玩具"，而是真正的生产力工具。我用GPT-4+Cursor，在3天内做出了一个月收过万的SaaS产品。这篇文章，我会把整个过程毫无保留地分享给你。</p>
+
+<h2>第一步：找到真实痛点</h2>
+<p>很多人做产品，第一步就错了——他们想的是"我能做什么"，而不是"用户需要什么"。我的方法是：去Reddit、知乎、小红书，看人们在抱怨什么。</p>
+<p>我找到的需求是：自媒体人每天需要把同一篇文章分发到多个平台，手动复制粘贴非常耗时。这就是痛点。</p>
+
+<h2>第二步：用AI快速验证想法</h2>
+<p>不需要写代码，先用AI生成一个产品页面，配上假截图，发到社交媒体上测试反应。如果没人感兴趣，立刻换方向。我花了2小时做landing page，当天就有50人留下邮箱。</p>
+
+<h2>第三步：MVP开发（3天）</h2>
+<p>Day 1：用Cursor + GPT-4写核心功能——一键分发文章到公众号、知乎、小红书。AI帮我写了80%的代码，我只负责调试和整合。</p>
+<p>Day 2：接入支付（Stripe），设置订阅模式。Cursor自动生成支付页面的代码。</p>
+<p>Day 3：部署上线，邀请内测用户。第一批用户来自我之前收集的邮箱列表。</p>
+
+<h2>第四步：冷启动与增长</h2>
+<p>产品上线后，我在相关社群里分享使用心得（不是硬广），回答大家的问题。3天内，付费用户达到23人，月收入超过$300。</p>
+
+<blockquote>
+最好的营销不是广告，而是帮助用户解决问题。
+</blockquote>
+
+<h2>关键心得</h2>
+<p>1. <strong>速度比完美重要</strong>：3天上线的粗糙产品，比3个月打磨的"完美"产品更有价值。</p>
+<p>2. <strong>AI是放大器</strong>：它不会替你思考，但会让你的执行速度快10倍。</p>
+<p>3. <strong>付费是验证</strong>：免费用户说好不算数，愿意付钱才是真需求。</p>
+
+<h2>下一步</h2>
+<p>现在产品月收入稳定在$1000+，我正在加入AI自动优化标题的功能。如果你也想用AI做产品，记住一句话：先做出来，再做好。</p>
+    `
+  },
+  5: {
+    content: `
+<h2>远程工作的真相</h2>
+<p>很多人觉得远程工作就是"想睡就睡，想玩就玩"。如果你真这么干，两周后就会发现自己什么都做不完，焦虑到爆炸。远程工作不是自由，而是<strong>自律的自由</strong>。</p>
+
+<h2>我的时间表</h2>
+<p>我每天早上8点起床，8:30开始工作，12点吃午饭，下午1:30继续，6点结束。看起来和普通上班差不多？是的，因为人的精力曲线就是这样，硬要打乱只会效率更低。</p>
+
+<h2>三个关键习惯</h2>
+
+<h3>1. 固定工作空间</h3>
+<p>我在家里专门划了一个角落作为"办公室"。只要坐在这里，大脑就会自动进入工作模式。其他地方（沙发、床上）绝不工作，这样工作和生活的界限才清晰。</p>
+
+<h3>2. 番茄工作法</h3>
+<p>25分钟专注 + 5分钟休息。听起来简单，但执行起来非常有效。关键是：那5分钟休息，一定要离开电脑，站起来走走。</p>
+
+<h3>3. 每日三件事</h3>
+<p>每天早上，我只会列出<strong>三件最重要的事</strong>。完成了，今天就成功了。其他事情都是 bonus。这个习惯让我不再被待办清单淹没。</p>
+
+<blockquote>
+效率不是做更多的事，而是把正确的事做好。
+</blockquote>
+
+<h2>避免的坑</h2>
+<p>❌ 穿着睡衣工作——会让你精神萎靡</p>
+<p>❌ 随时看微信/钉钉——碎片信息会摧毁专注力</p>
+<p>❌ 没有明确的下班时间——远程工作最容易过劳</p>
+
+<h2>总结</h2>
+<p>远程工作的核心，是用自律换取自由。建立好自己的节奏，你会比在公司更高效，同时还能省下通勤时间，陪伴家人或发展爱好。这才是远程工作的真正价值。</p>
+    `
+  },
+  6: {
+    content: `
+<h2>为什么公开我的投资？</h2>
+<p>投资圈有个说法："晒收益的都是骗子。"我不否认这一点。但我相信，真实的复盘比炫耀更有价值。以下是我的完整投资记录，包括赚的和亏的。</p>
+
+<h2>我的资产配置</h2>
+<p>2025年初，我的可投资资产大约30万，配置如下：</p>
+<ul>
+<li>沪深300指数基金：40%（12万）</li>
+<li>纳斯达克100指数基金：25%（7.5万）</li>
+<li>黄金ETF：15%（4.5万）</li>
+<li>可转债：10%（3万）</li>
+<li>现金：10%（3万）</li>
+</ul>
+
+<h2>全年操作记录</h2>
+<p><strong>1月</strong>：加仓沪深300，当时市场恐慌，我觉得是机会。买入价对应PE约11倍。</p>
+<p><strong>3月</strong>：美股回调，加仓纳斯达克100。当时很多人说要崩盘，我选择相信长期趋势。</p>
+<p><strong>6月</strong>：黄金突破历史新高，我按纪律减仓一半，锁定利润。</p>
+<p><strong>9月</strong>：A股一波反弹，沪深300涨幅约15%，我没有动，继续定投。</p>
+<p><strong>12月</strong>：年末盘点，全年收益率23%，超出预期。</p>
+
+<h2>踩过的坑</h2>
+<p>❌ <strong>试图择时</strong>：3月份有一次想"等跌多一点再买"，结果错过了一波涨幅。后来严格执行定投，不再猜顶底。</p>
+<p>❌ <strong>关注短期波动</strong>：有段时间每天看盘，情绪跟着K线起伏。后来设置好定投，一周看一次，心态好多了。</p>
+
+<blockquote>
+投资最大的敌人不是市场，而是你自己的情绪。
+</blockquote>
+
+<h2>2026年计划</h2>
+<p>1. 继续定投沪深300和纳斯达克100，比例维持6:4</p>
+<p>2. 黄金仓位降至10%，作为避险配置</p>
+<p>3. 学习可转债轮动策略，提高这部分收益</p>
+<p>4. 目标：年化收益15%，最大回撤控制在20%以内</p>
+
+<h2>给你的建议</h2>
+<p>如果你刚开始投资，记住三点：第一，用闲钱投资，不影响生活；第二，分散配置，不要把鸡蛋放一个篮子；第三，坚持定投，时间会给你回报。</p>
+    `
+  }
+};
+
+// 从localStorage读取后台发布的文章正文
+function getArticleContent(id) {
+  // 先查内置内容
+  if (BUILTIN_CONTENTS[id]) {
+    return BUILTIN_CONTENTS[id].content;
+  }
+  // 再查localStorage中后台发布的文章
+  const extraContents = Storage.get('articleContents') || {};
+  if (extraContents[id]) {
+    return extraContents[id];
+  }
+  // 默认返回
+  return '<p style="color:#94a3b8;text-align:center;padding:40px;"><i class="fas fa-file-alt" style="font-size:2rem;display:block;margin-bottom:12px;"></i>文章内容加载中...<br><small>该文章暂无详细内容</small></p>';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const id = parseInt(getUrlParam('id'));
+  const article = BLOG_DATA.articles.find(a => a.id === id);
+  const page = document.getElementById('articlePage');
+
+  if (!article) {
+    page.innerHTML = '<div style="text-align:center;padding:120px 24px"><h2>文章不存在</h2><a href="articles.html" style="color:var(--primary)">← 返回文章列表</a></div>';
+    return;
+  }
+
+  const isVip = isVipUser();
+  const canRead = !article.vip || isVip;
+  const content = getArticleContent(id);
+
+  const html = `
+    <section class="article-hero">
+      <div class="container">
+        <div class="article-hero-title">${article.title}</div>
+        <div class="article-hero-meta">
+          <span><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:6px;" />高绪武</span>
+          <span><i class="fas fa-calendar"></i> ${article.date}</span>
+          <span><i class="fas fa-eye"></i> ${formatNum(article.views)}</span>
+          <span class="article-tag ${article.vip ? 'vip' : ''}">${article.tag}</span>
+        </div>
+      </div>
+    </section>
+    <div class="article-content-wrap">
+      <img src="${article.cover}" style="width:100%;border-radius:16px;margin-bottom:40px;height:320px;object-fit:cover;" />
+      <div class="article-content">
+        ${canRead ? content : content.substring(0, 600) + '...'}
+      </div>
+      ${!canRead ? `
+        <div class="vip-gate">
+          <div class="vip-gate-inner">
+            <i class="fas fa-lock"></i>
+            <h3>会员专属内容</h3>
+            <p>该文章后续内容为会员专属，联系博主开通会员即可解锁</p>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <a href="#" onclick="openModal('payModal')" style="padding:12px 28px;background:var(--primary);color:white;border-radius:20px;font-weight:600;">👑 立即开通会员</a>
+              <a href="index.html" style="padding:12px 28px;border:2px solid var(--border);border-radius:20px;font-weight:600;color:var(--text-light);">返回首页</a>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- 分享区 -->
+      <div style="margin-top:48px;padding:28px;background:#f8fafc;border-radius:16px;border:1px solid var(--border);">
+        <p style="font-weight:600;margin-bottom:16px;font-size:.95rem;">📤 分享这篇文章，让更多人看到</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button onclick="shareArticle('wechat')" style="padding:8px 18px;background:#07C160;color:white;border:none;border-radius:20px;cursor:pointer;font-size:.88rem;"><i class="fab fa-weixin"></i> 微信</button>
+          <button onclick="shareArticle('weibo')" style="padding:8px 18px;background:#E6162D;color:white;border:none;border-radius:20px;cursor:pointer;font-size:.88rem;"><i class="fab fa-weibo"></i> 微博</button>
+          <button onclick="copyArticleLink()" id="copyArticleBtn" style="padding:8px 18px;background:var(--primary);color:white;border:none;border-radius:20px;cursor:pointer;font-size:.88rem;"><i class="fas fa-link"></i> 复制链接</button>
+        </div>
+      </div>
+
+      <!-- 推广 -->
+      <div style="margin-top:28px;padding:28px;background:linear-gradient(135deg,#f5f3ff,#fce7f3);border-radius:16px;border:1px dashed var(--primary);">
+        <p style="font-weight:600;margin-bottom:8px;color:var(--primary);">💰 推广这篇文章，赚取佣金</p>
+        <p style="font-size:.88rem;color:var(--text-light);margin-bottom:14px;">你的专属推广链接，每成功邀请一位会员，获得30%佣金</p>
+        <div style="display:flex;gap:10px;">
+          <input id="articlePromoLink" type="text" style="flex:1;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;background:white;" readonly />
+          <button onclick="copyPromoLink()" id="copyBtn" class="btn-copy">复制推广链接</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 相关文章 -->
+    <div style="background:#fafafa;padding:60px 0;">
+      <div class="container">
+        <div class="section-header"><h2>相关文章</h2></div>
+        <div class="articles-grid" id="relatedArticles"></div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-bottom" style="padding:20px 0;">
+          <p>© 2026 高绪武博客</p>
+          <p>付费咨询：微信 gaoxuwu | 电话 15312636073</p>
+        </div>
+      </div>
+    </footer>
+  `;
+  page.innerHTML = html;
+
+  // 初始化推广链接
+  const promoInput = document.getElementById('articlePromoLink');
+  if (promoInput) promoInput.value = generatePromoLink();
+
+  // 相关文章
+  const related = BLOG_DATA.articles.filter(a => a.id !== id).slice(0, 3);
+  const relGrid = document.getElementById('relatedArticles');
+  if (relGrid) {
+    relGrid.innerHTML = related.map(a => `
+      <div class="article-card" onclick="location.href='article.html?id=${a.id}'">
+        <img class="article-thumb" src="${a.cover}" />
+        <div class="article-body">
+          <div class="article-meta"><span class="article-tag ${a.vip?'vip':''}">${a.tag}</span><span>${a.date}</span></div>
+          <h3 class="article-title">${a.title}</h3>
+          <p class="article-excerpt">${a.excerpt}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+});
+
+function shareArticle(platform) {
+  const url = encodeURIComponent(window.location.href);
+  const title = encodeURIComponent(document.title);
+  if (platform === 'weibo') window.open(`https://service.weibo.com/share/share.php?url=${url}&title=${title}`);
+  else { copyToClipboard(window.location.href); showAlert('链接已复制，请粘贴到微信分享', 'success'); }
+}
+
+function copyArticleLink() {
+  copyToClipboard(window.location.href);
+  const btn = document.getElementById('copyArticleBtn');
+  if (btn) { btn.innerHTML = '✓ 已复制'; setTimeout(() => btn.innerHTML = '<i class="fas fa-link"></i> 复制链接', 2000); }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) { navigator.clipboard.writeText(text); }
+  else { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+}
+</script>
+</body>
+</html>

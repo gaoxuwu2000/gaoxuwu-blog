@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>管理后台 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- 富文本编辑器 -->
+  <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+  <!-- 代码高亮 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    .admin-layout { display: flex; min-height: 100vh; padding-top: var(--nav-h); }
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      background: #1a1a2e;
+      padding: 28px 0;
+      position: fixed;
+      top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: 8px; }
+    .sidebar-label {
+      padding: 8px 20px;
+      font-size: .72rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.35);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      color: rgba(255,255,255,.65);
+      font-size: .9rem;
+      transition: all .2s;
+      cursor: pointer;
+    }
+    .sidebar-link:hover, .sidebar-link.active {
+      color: white;
+      background: rgba(108,99,255,.25);
+      border-left: 3px solid var(--primary);
+    }
+    .sidebar-link i { width: 18px; text-align: center; }
+    .admin-main {
+      flex: 1;
+      margin-left: 240px;
+      padding: 32px;
+      background: #f1f5f9;
+      min-height: calc(100vh - var(--nav-h));
+    }
+    .admin-header { margin-bottom: 28px; }
+    .admin-header h2 { font-size: 1.4rem; font-weight: 700; }
+    .admin-header p { color: var(--text-light); font-size: .9rem; margin-top: 4px; }
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .stat-card h3 { font-size: 1.7rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+    .stat-card p { font-size: .82rem; color: var(--text-light); }
+    .stat-trend { font-size: .78rem; font-weight: 600; }
+    .trend-up { color: #dc2626; }
+    .trend-down { color: #059669; }
+    .admin-section { background: white; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; }
+    .admin-section-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .admin-section-header h4 { font-size: 1rem; font-weight: 600; }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .admin-table th { padding: 10px 16px; text-align: left; font-size: .8rem; font-weight: 600; color: var(--text-light); background: #fafafa; border-bottom: 1px solid var(--border); }
+    .admin-table td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: #fafafa; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: .78rem; font-weight: 600; }
+    .badge-vip { background: #fef3c7; color: #d97706; }
+    .badge-free { background: #f1f5f9; color: #64748b; }
+    .badge-active { background: #dcfce7; color: #16a34a; }
+    .badge-pending { background: #fef9c3; color: #ca8a04; }
+    .btn-sm { padding: 5px 12px; border-radius: 6px; font-size: .78rem; font-weight: 600; cursor: pointer; border: none; }
+    .btn-sm-primary { background: var(--primary); color: white; }
+    .btn-sm-danger { background: #fee2e2; color: #dc2626; }
+    .btn-sm-success { background: #dcfce7; color: #16a34a; }
+    .form-inline { display: flex; gap: 10px; flex-wrap: wrap; }
+    .form-inline input, .form-inline select {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: .88rem;
+      outline: none;
+      font-family: inherit;
+      background: white;
+    }
+    .form-inline input:focus, .form-inline select:focus { border-color: var(--primary); }
+    
+    /* 富文本编辑器容器 */
+    .editor-container { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .editor-toolbar { background: #f8fafc; padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; }
+    .editor-toolbar button { padding: 6px 12px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; font-size: .85rem; transition: all .2s; }
+    .editor-toolbar button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .editor-toolbar button.active { background: var(--primary); color: white; }
+    .editor-content { min-height: 400px; padding: 20px; outline: none; line-height: 1.8; }
+    .editor-content:empty:before { content: '开始写作...'; color: #94a3b8; }
+    .editor-content h2 { font-size: 1.5rem; font-weight: 700; margin: 24px 0 16px; color: var(--text); }
+    .editor-content h3 { font-size: 1.2rem; font-weight: 600; margin: 20px 0 12px; color: var(--text); }
+    .editor-content p { margin-bottom: 16px; color: var(--text); }
+    .editor-content blockquote { border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0; color: var(--text-light); font-style: italic; background: #f8fafc; padding: 12px 16px; border-radius: 0 8px 8px 0; }
+    .editor-content code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: .9em; }
+    .editor-content pre { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 16px 0; }
+    .editor-content pre code { background: none; padding: 0; color: inherit; }
+    .editor-content img { max-width: 100%; border-radius: 8px; margin: 16px 0; }
+    .editor-content ul, .editor-content ol { margin: 16px 0; padding-left: 24px; }
+    .editor-content li { margin: 8px 0; }
+    
+    /* 文件管理器 */
+    .file-manager { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+    .file-toolbar { display: flex; gap: 10px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px; }
+    .file-item { text-align: center; padding: 16px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; transition: all .2s; position: relative; }
+    .file-item:hover { border-color: var(--primary); background: #f8fafc; }
+    .file-item.selected { border-color: var(--primary); background: #f5f3ff; }
+    .file-item i { font-size: 2.5rem; color: var(--primary); margin-bottom: 8px; }
+    .file-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+    .file-item span { font-size: .8rem; color: var(--text); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-item .file-actions { position: absolute; top: 4px; right: 4px; display: none; }
+    .file-item:hover .file-actions { display: flex; gap: 4px; }
+    .file-item .file-actions button { width: 24px; height: 24px; border-radius: 4px; border: none; background: white; cursor: pointer; font-size: .7rem; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+    .file-item .file-actions button:hover { background: #fee2e2; color: #dc2626; }
+    
+    /* 图片上传区域 */
+    .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all .2s; }
+    .upload-zone:hover { border-color: var(--primary); background: #f8fafc; }
+    .upload-zone.dragover { border-color: var(--primary); background: #f5f3ff; }
+    .upload-zone i { font-size: 2rem; color: var(--text-light); margin-bottom: 12px; }
+    .upload-zone p { color: var(--text-light); font-size: .9rem; }
+    
+    /* 文章编辑模态框 */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: white; border-radius: 16px; width: 100%; max-width: 900px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+    .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h3 { font-size: 1.1rem; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+    .modal-body { flex: 1; overflow-y: auto; padding: 24px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    
+    /* 标签输入 */
+    .tag-input { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1.5px solid var(--border); border-radius: 8px; min-height: 44px; }
+    .tag-input input { border: none; outline: none; flex: 1; min-width: 80px; background: transparent; }
+    .tag-item { background: #f5f3ff; color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: .8rem; display: flex; align-items: center; gap: 6px; }
+    .tag-item button { background: none; border: none; cursor: pointer; color: var(--primary); font-size: .7rem; }
+    
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .admin-main { margin-left: 0; padding: 20px; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) { .stat-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">返回前台</a>
+      <a href="dashboard.html" class="active">管理后台</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="user-menu">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu&backgroundColor=b6e3f4" class="avatar" />
+        <div class="dropdown">
+          <a href="index.html"><i class="fas fa-home"></i> 前台首页</a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">概览</div>
+      <div class="sidebar-link active" onclick="showSection('overview')"><i class="fas fa-home"></i> 数据概览</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">内容管理</div>
+      <div class="sidebar-link" onclick="showSection('articles')"><i class="fas fa-file-alt"></i> 文章管理</div>
+      <div class="sidebar-link" onclick="showSection('collector')"><i class="fas fa-robot"></i> 自动采集 <span style="font-size:.65rem;background:var(--primary);color:white;padding:1px 5px;border-radius:8px;margin-left:4px;">NEW</span></div>
+      <div class="sidebar-link" onclick="showSection('files')"><i class="fas fa-images"></i> 文件管理</div>
+      <div class="sidebar-link" onclick="showSection('comments')"><i class="fas fa-comments"></i> 评论管理</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">用户运营</div>
+      <div class="sidebar-link" onclick="showSection('users')"><i class="fas fa-users"></i> 用户管理</div>
+      <div class="sidebar-link" onclick="showSection('vips')"><i class="fas fa-crown"></i> 会员管理</div>
+      <div class="sidebar-link" onclick="showSection('promote')"><i class="fas fa-bullhorn"></i> 推广管理</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">财务</div>
+      <div class="sidebar-link" onclick="showSection('finance')"><i class="fas fa-yen-sign"></i> 收入统计</div>
+      <div class="sidebar-link" onclick="showSection('withdraw')"><i class="fas fa-wallet"></i> 提现申请</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">系统</div>
+      <div class="sidebar-link" onclick="showSection('settings')"><i class="fas fa-cog"></i> 博客设置</div>
+    </div>
+  </aside>
+
+  <!-- 主区域 -->
+  <main class="admin-main">
+
+    <!-- 概览 -->
+    <div id="section-overview">
+      <div class="admin-header">
+        <h2>👋 你好，高绪武！</h2>
+        <p>今天是 <span id="today"></span>，博客一切运行正常</p>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#f5f3ff;"><i class="fas fa-eye" style="color:var(--primary)"></i></div>
+            <span class="stat-trend trend-up">↑ 12%</span>
+          </div>
+          <h3 id="totalViews">18,432</h3>
+          <p>今日总阅读量</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#ecfdf5;"><i class="fas fa-user-plus" style="color:#059669"></i></div>
+            <span class="stat-trend trend-up">↑ 5%</span>
+          </div>
+          <h3 id="newUsers">23</h3>
+          <p>今日新注册</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#fef3c7;"><i class="fas fa-crown" style="color:#f59e0b"></i></div>
+            <span class="stat-trend trend-up">↑ 8%</span>
+          </div>
+          <h3 id="vipCount">156</h3>
+          <p>活跃会员数</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#fce7f3;"><i class="fas fa-yen-sign" style="color:#db2777"></i></div>
+            <span class="stat-trend trend-up">↑ 15%</span>
+          </div>
+          <h3 id="monthIncome">¥5,928</h3>
+          <p>本月收入</p>
+        </div>
+      </div>
+
+      <!-- 最近注册 -->
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-user-clock"></i> 最近注册用户</h4>
+          <button class="btn-sm btn-sm-primary" onclick="showSection('users')">查看全部</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>用户名</th><th>手机号</th><th>注册时间</th><th>推荐人</th><th>状态</th><th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="recentUsersTable">
+            <!-- 由JS填充 -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 最近付款 -->
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-receipt"></i> 最近付款记录</h4>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>用户</th><th>套餐</th><th>金额</th><th>时间</th><th>状态</th><th>操作</th></tr>
+          </thead>
+          <tbody id="recentPayTable">
+            <tr>
+              <td>user_demo1</td><td>月度会员</td><td style="color:#059669;font-weight:600;">¥38</td>
+              <td>2026-04-16 20:30</td><td><span class="badge badge-active">已激活</span></td>
+              <td><button class="btn-sm btn-sm-success">已确认</button></td>
+            </tr>
+            <tr>
+              <td>user_demo2</td><td>年度会员</td><td style="color:#059669;font-weight:600;">¥298</td>
+              <td>2026-04-16 18:45</td><td><span class="badge badge-pending">待确认</span></td>
+              <td><button class="btn-sm btn-sm-primary" onclick="confirmPayment(this)">确认开通</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 文章管理 -->
+    <div id="section-articles" style="display:none;">
+      <div class="admin-header">
+        <h2>文章管理</h2>
+        <p>管理博客所有文章，支持富文本编辑</p>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4>文章列表（共 <span id="articleCount">6</span> 篇）</h4>
+          <div>
+            <button class="btn-sm" style="background:#f1f5f9;color:var(--text);margin-right:8px;" onclick="showSection('files')"><i class="fas fa-images"></i> 文件管理</button>
+            <button class="btn-sm btn-sm-primary" onclick="openArticleEditor()"><i class="fas fa-plus"></i> 新建文章</button>
+          </div>
+        </div>
+
+        <!-- 文章筛选 -->
+        <div style="padding:16px 24px;border-bottom:1px solid var(--border);background:#fafafa;">
+          <div class="form-inline">
+            <input type="text" id="searchArticle" placeholder="搜索文章标题..." oninput="searchArticles()" style="width:240px;" />
+            <select id="filterCat" onchange="filterArticles()">
+              <option value="">全部分类</option>
+              <option value="tech">💻 技术</option>
+              <option value="life">🌱 生活</option>
+              <option value="finance">💰 理财</option>
+              <option value="growth">🧠 成长</option>
+            </select>
+            <select id="filterType" onchange="filterArticles()">
+              <option value="">全部类型</option>
+              <option value="free">免费文章</option>
+              <option value="vip">会员专属</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="admin-table">
+          <thead>
+            <tr><th>ID</th><th>标题</th><th>分类</th><th>阅读量</th><th>点赞</th><th>发布日期</th><th>类型</th><th>操作</th></tr>
+          </thead>
+          <tbody id="articlesTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 文件管理 -->
+    <div id="section-files" style="display:none;">
+      <div class="admin-header">
+        <h2>文件管理</h2>
+        <p>上传和管理图片、附件等文件</p>
+      </div>
+      <div class="file-manager">
+        <div class="file-toolbar">
+          <button class="btn-sm btn-sm-primary" onclick="document.getElementById('fileInput').click()"><i class="fas fa-upload"></i> 上传文件</button>
+          <button class="btn-sm" style="background:#f1f5f9;color:var(--text);" onclick="refreshFileList()"><i class="fas fa-sync"></i> 刷新</button>
+          <button class="btn-sm btn-sm-danger" onclick="deleteSelectedFiles()"><i class="fas fa-trash"></i> 删除选中</button>
+          <input type="file" id="fileInput" multiple accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
+        </div>
+        
+        <!-- 上传区域 -->
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>点击或拖拽文件到此处上传</p>
+          <p style="font-size:.8rem;margin-top:8px;">支持 JPG、PNG、GIF、WebP 格式</p>
+        </div>
+        
+        <!-- 文件列表 -->
+        <div style="margin-top:20px;">
+          <h4 style="font-size:.9rem;color:var(--text-light);margin-bottom:12px;">已上传文件 (<span id="fileCount">0</span>)</h4>
+          <div class="file-grid" id="fileGrid">
+            <!-- 由JS填充 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 评论管理 -->
+    <div id="section-comments" style="display:none;">
+      <div class="admin-header">
+        <h2>评论管理</h2>
+        <p>审核和管理用户评论</p>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4>全部评论</h4>
+          <div class="form-inline">
+            <select id="commentFilter" onchange="loadComments()">
+              <option value="all">全部评论</option>
+              <option value="pending">待审核</option>
+              <option value="approved">已通过</option>
+            </select>
+          </div>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>用户</th><th>文章</th><th>评论内容</th><th>时间</th><th>状态</th><th>操作</th></tr>
+          </thead>
+          <tbody id="commentsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 用户管理 -->
+    <div id="section-users" style="display:none;">
+      <div class="admin-header">
+        <h2>用户管理</h2>
+        <p>查看并管理所有注册用户</p>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4>用户列表（共 <span id="userCount">0</span> 人）</h4>
+          <div class="form-inline">
+            <input type="text" id="searchUser" placeholder="搜索用户名/手机号" oninput="searchUsers()" />
+          </div>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>ID</th><th>用户名</th><th>昵称</th><th>手机号</th><th>会员</th><th>注册时间</th><th>推荐人</th><th>操作</th></tr>
+          </thead>
+          <tbody id="usersTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 会员管理 -->
+    <div id="section-vips" style="display:none;">
+      <div class="admin-header">
+        <h2>会员管理</h2>
+        <p>手动开通/关闭会员权益</p>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4>手动开通会员</h4>
+        </div>
+        <div style="padding:24px;">
+          <div class="form-inline" style="margin-bottom:16px;">
+            <input type="text" id="vipUsername" placeholder="用户名" style="width:200px;" />
+            <select id="vipPlan">
+              <option value="monthly">月度会员（¥38）</option>
+              <option value="yearly">年度会员（¥298）</option>
+            </select>
+            <button class="btn-sm btn-sm-primary" style="padding:8px 20px;" onclick="grantVip()">开通会员</button>
+          </div>
+          <p style="font-size:.85rem;color:var(--text-light);">确认收款后，在此手动为用户开通会员权益</p>
+        </div>
+        <table class="admin-table">
+          <thead><tr><th>用户名</th><th>会员类型</th><th>开通时间</th><th>到期时间</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody id="vipsTable">
+            <tr>
+              <td>gaoxuwu</td><td>年度会员</td><td>2026-01-01</td><td>2026-12-31</td>
+              <td><span class="badge badge-active">有效</span></td>
+              <td><button class="btn-sm btn-sm-danger">撤销</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 推广管理 -->
+    <div id="section-promote" style="display:none;">
+      <div class="admin-header">
+        <h2>推广管理</h2>
+        <p>查看推广数据，管理佣金结算</p>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header"><h4>推广排行榜</h4></div>
+        <table class="admin-table">
+          <thead><tr><th>排名</th><th>推广人</th><th>邀请人数</th><th>成功付费</th><th>佣金金额</th><th>状态</th></tr></thead>
+          <tbody id="promoteTable">
+            <tr>
+              <td>🥇 1</td><td>demo_user1</td><td>12</td><td>4</td>
+              <td style="color:#059669;font-weight:600;">¥45.6</td>
+              <td><span class="badge badge-pending">待结算</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 收入统计 -->
+    <div id="section-finance" style="display:none;">
+      <div class="admin-header">
+        <h2>收入统计</h2>
+        <p>博客会员收入概览</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+        <div class="stat-card"><h3 style="color:#059669;">¥5,928</h3><p>本月总收入</p></div>
+        <div class="stat-card"><h3 style="color:#f59e0b;">¥298</h3><p>待结算佣金</p></div>
+        <div class="stat-card"><h3 style="color:var(--primary);">156</h3><p>当前会员数</p></div>
+        <div class="stat-card"><h3>¥38,240</h3><p>累计总收入</p></div>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header"><h4>近30天收入趋势</h4></div>
+        <div style="padding:24px;text-align:center;color:var(--text-light);">
+          <i class="fas fa-chart-line" style="font-size:3rem;opacity:.3;margin-bottom:12px;display:block;"></i>
+          <p>收入图表（实际部署后接入支付系统可显示）</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 自动采集管理 -->
+    <div id="section-collector" style="display:none;">
+      <div class="admin-header">
+        <h2><i class="fas fa-robot"></i> 自动文章采集</h2>
+        <p>配置采集源，管理自动发布规则</p>
+      </div>
+      
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#f5f3ff;"><i class="fas fa-rss" style="color:var(--primary)"></i></div>
+          </div>
+          <h3 id="collectorSourceCount">4</h3>
+          <p>采集源数量</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#ecfdf5;"><i class="fas fa-download" style="color:#059669"></i></div>
+          </div>
+          <h3 id="collectedToday">10</h3>
+          <p>今日采集</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#fef3c7;"><i class="fas fa-check-circle" style="color:#f59e0b"></i></div>
+          </div>
+          <h3 id="publishedToday">0</h3>
+          <p>今日发布</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon" style="background:#fce7f3;"><i class="fas fa-clock" style="color:#db2777"></i></div>
+          </div>
+          <h3>06:00</h3>
+          <p>下次采集</p>
+        </div>
+      </div>
+      
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-cog"></i> 采集设置</h4>
+          <button class="btn-sm btn-sm-primary" onclick="saveCollectorSettings()"><i class="fas fa-save"></i> 保存设置</button>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:grid;gap:20px;max-width:600px;">
+            <div>
+              <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:8px;">每日采集时间</label>
+              <select id="collectTime" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;width:200px;">
+                <option value="06:00">06:00</option>
+                <option value="08:00" selected>08:00</option>
+                <option value="10:00">10:00</option>
+                <option value="12:00">12:00</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:8px;">每日采集数量</label>
+              <select id="collectCount" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;width:200px;">
+                <option value="5">5篇</option>
+                <option value="10" selected>10篇</option>
+                <option value="15">15篇</option>
+                <option value="20">20篇</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:8px;">自动发布设置</label>
+              <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                  <input type="checkbox" id="autoPublish" checked /> 自动发布采集的文章
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                  <input type="checkbox" id="needReview" /> 发布前需要审核
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-list"></i> 今日采集列表</h4>
+          <div>
+            <button class="btn-sm" style="background:#f1f5f9;color:var(--text);margin-right:8px;" onclick="refreshCollector()"><i class="fas fa-sync"></i> 重新采集</button>
+            <button class="btn-sm btn-sm-primary" onclick="publishAllCollected()"><i class="fas fa-upload"></i> 全部发布</button>
+          </div>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>标题</th><th>来源</th><th>分类</th><th>采集时间</th><th>状态</th><th>操作</th></tr>
+          </thead>
+          <tbody id="collectorTable">
+            <!-- 由JS填充 -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="admin-section">
+        <div class="admin-section-header">
+          <h4><i class="fas fa-database"></i> 采集源配置</h4>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:grid;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+              <i class="fas fa-rss" style="color:var(--primary);"></i>
+              <div style="flex:1;">
+                <div style="font-weight:600;">技术资讯</div>
+                <div style="font-size:.85rem;color:var(--text-light);">关键词: AI, 编程, 技术, 开源</div>
+              </div>
+              <span class="badge badge-active">启用</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+              <i class="fas fa-rss" style="color:var(--primary);"></i>
+              <div style="flex:1;">
+                <div style="font-weight:600;">财经热点</div>
+                <div style="font-size:.85rem;color:var(--text-light);">关键词: 投资, 理财, 股票, 基金</div>
+              </div>
+              <span class="badge badge-active">启用</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+              <i class="fas fa-rss" style="color:var(--primary);"></i>
+              <div style="flex:1;">
+                <div style="font-weight:600;">成长干货</div>
+                <div style="font-size:.85rem;color:var(--text-light);">关键词: 效率, 习惯, 学习, 思维</div>
+              </div>
+              <span class="badge badge-active">启用</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+              <i class="fas fa-rss" style="color:var(--primary);"></i>
+              <div style="flex:1;">
+                <div style="font-weight:600;">生活方式</div>
+                <div style="font-size:.85rem;color:var(--text-light);">关键词: 健康, 旅行, 美食, 家居</div>
+              </div>
+              <span class="badge badge-active">启用</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 博客设置 -->
+    <div id="section-settings" style="display:none;">
+      <div class="admin-header">
+        <h2>博客设置</h2>
+        <p>管理基本信息与联系方式</p>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header"><h4>SEO 设置</h4></div>
+        <div style="padding:24px;display:grid;gap:16px;max-width:600px;">
+          <div class="form-group">
+            <label>网站标题</label>
+            <input type="text" id="siteTitle" value="高绪武博客 | 技术、理财与成长" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <div class="form-group">
+            <label>网站描述</label>
+            <textarea id="siteDesc" rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;resize:vertical;">高绪武的个人博客，分享技术干货、理财投资心得、个人成长感悟。每晚21:00更新，提供会员专属深度内容。</textarea>
+          </div>
+          <div class="form-group">
+            <label>网站关键词（用逗号分隔）</label>
+            <input type="text" id="siteKeywords" value="高绪武,技术博客,理财博客,个人成长,程序员,投资心得" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+        </div>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-header"><h4>基本信息</h4></div>
+        <div style="padding:24px;display:grid;gap:16px;max-width:500px;">
+          <div class="form-group">
+            <label>博客名称</label>
+            <input type="text" id="blogName" value="高绪武的数字花园" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <div class="form-group">
+            <label>博主微信</label>
+            <input type="text" id="wechatId" value="gaoxuwu" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <div class="form-group">
+            <label>联系电话</label>
+            <input type="text" id="phoneNum" value="15312636073" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <div class="form-group">
+            <label>月度会员价格（¥）</label>
+            <input type="number" id="monthlyPrice" value="38" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <div class="form-group">
+            <label>年度会员价格（¥）</label>
+            <input type="number" id="yearlyPrice" value="298" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <div class="form-group">
+            <label>推广佣金比例（%）</label>
+            <input type="number" id="commissionRate" value="30" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;" />
+          </div>
+          <button class="btn-submit" style="width:auto;padding:11px 28px;" onclick="saveSettings()">保存设置</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- 文章编辑器模态框 -->
+<div class="modal-overlay" id="articleEditorModal">
+  <div class="modal-box" style="max-width:1000px;max-height:95vh;">
+    <div class="modal-header">
+      <h3 id="editorTitle">✍️ 编辑文章</h3>
+      <button class="modal-close" onclick="closeArticleEditor()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;gap:16px;">
+        <input type="hidden" id="editArticleId" />
+        <div>
+          <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:6px;">文章标题</label>
+          <input type="text" id="editTitle" placeholder="输入文章标题" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit;outline:none;" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div>
+            <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:6px;">分类</label>
+            <select id="editCat" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+              <option value="tech">💻 技术</option>
+              <option value="life">🌱 生活</option>
+              <option value="finance">💰 理财</option>
+              <option value="growth">🧠 成长</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:6px;">文章类型</label>
+            <select id="editVip" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+              <option value="0">免费文章</option>
+              <option value="1">👑 会员专属</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:6px;">封面图片</label>
+            <button class="btn-sm btn-sm-primary" style="width:100%;" onclick="openImageSelector()"><i class="fas fa-image"></i> 选择封面</button>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:6px;">文章摘要</label>
+          <textarea id="editExcerpt" rows="2" placeholder="输入文章摘要，显示在列表页..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;resize:vertical;"></textarea>
+        </div>
+        <div>
+          <label style="display:block;font-size:.85rem;color:var(--text-light);margin-bottom:6px;">文章内容</label>
+          <div class="editor-container">
+            <div class="editor-toolbar">
+              <button onclick="execCmd('bold')" title="加粗"><i class="fas fa-bold"></i></button>
+              <button onclick="execCmd('italic')" title="斜体"><i class="fas fa-italic"></i></button>
+              <button onclick="execCmd('underline')" title="下划线"><i class="fas fa-underline"></i></button>
+              <button onclick="execCmd('strikeThrough')" title="删除线"><i class="fas fa-strikethrough"></i></button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button onclick="execCmd('formatBlock', 'H2')" title="标题2">H2</button>
+              <button onclick="execCmd('formatBlock', 'H3')" title="标题3">H3</button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button onclick="execCmd('insertUnorderedList')" title="无序列表"><i class="fas fa-list-ul"></i></button>
+              <button onclick="execCmd('insertOrderedList')" title="有序列表"><i class="fas fa-list-ol"></i></button>
+              <button onclick="execCmd('formatBlock', 'BLOCKQUOTE')" title="引用"><i class="fas fa-quote-left"></i></button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button onclick="execCmd('createLink')" title="插入链接"><i class="fas fa-link"></i></button>
+              <button onclick="insertImage()" title="插入图片"><i class="fas fa-image"></i></button>
+              <button onclick="execCmd('insertCode')" title="插入代码"><i class="fas fa-code"></i></button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button onclick="execCmd('removeFormat')" title="清除格式"><i class="fas fa-eraser"></i></button>
+            </div>
+            <div class="editor-content" id="editContent" contenteditable="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" style="background:#f1f5f9;color:var(--text);padding:10px 20px;" onclick="closeArticleEditor()">取消</button>
+      <button class="btn-sm btn-sm-primary" style="padding:10px 24px;" onclick="saveArticle()">
+        <i class="fas fa-save"></i> 保存文章
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 图片选择器模态框 -->
+<div class="modal-overlay" id="imageSelectorModal">
+  <div class="modal-box" style="max-width:700px;">
+    <div class="modal-header">
+      <h3>选择图片</h3>
+      <button class="modal-close" onclick="closeImageSelector()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="file-grid" id="imageSelectorGrid">
+        <!-- 由JS填充 -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" style="background:#f1f5f9;color:var(--text);padding:10px 20px;" onclick="closeImageSelector()">取消</button>
+      <button class="btn-sm btn-sm-primary" style="padding:10px 24px;" onclick="confirmImageSelect()">确认选择</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+// 全局变量
+let currentEditId = null;
+let selectedFiles = new Set();
+let selectedImage = null;
+
+// 权限检查
+document.addEventListener('DOMContentLoaded', () => {
+  const user = getCurrentUser();
+  if (!user || !user.isAdmin) {
+    showAlert('请先以管理员身份登录', 'error');
+    setTimeout(() => window.location.href = 'login.html', 1500);
+    return;
+  }
+  document.getElementById('today').textContent = new Date().toLocaleDateString('zh-CN', { year:'numeric',month:'long',day:'numeric',weekday:'long' });
+  loadDashboardData();
+  initFileManager();
+});
+
+function showSection(name) {
+  document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+  const el = document.getElementById('section-' + name);
+  if (el) el.style.display = 'block';
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  event?.target?.closest('.sidebar-link')?.classList.add('active');
+  if (name === 'users') loadUsersTable();
+  if (name === 'articles') loadArticlesTable();
+  if (name === 'comments') loadComments();
+  if (name === 'files') refreshFileList();
+  if (name === 'collector') loadCollectorData();
+}
+
+function loadDashboardData() {
+  const users = Storage.get('users') || [];
+  const tbody = document.getElementById('recentUsersTable');
+  if (!tbody) return;
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:20px;">暂无注册用户</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.slice(-5).reverse().map(u => `
+    <tr>
+      <td>${u.username}</td>
+      <td>${u.phone}</td>
+      <td>${new Date(u.createdAt).toLocaleString('zh-CN')}</td>
+      <td>${u.inviteBy || '-'}</td>
+      <td><span class="badge ${u.isVip ? 'badge-vip' : 'badge-free'}">${u.isVip ? '会员' : '免费'}</span></td>
+      <td>
+        <button class="btn-sm btn-sm-primary" onclick="grantVipToUser('${u.username}')">开通会员</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function loadUsersTable(filter = '') {
+  const users = Storage.get('users') || [];
+  const filtered = filter ? users.filter(u => u.username.includes(filter) || u.phone?.includes(filter)) : users;
+  const tbody = document.getElementById('usersTable');
+  const countEl = document.getElementById('userCount');
+  if (countEl) countEl.textContent = filtered.length;
+  if (!tbody) return;
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:20px;">暂无用户数据</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map((u, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><strong>${u.username}</strong></td>
+      <td>${u.nickname || '-'}</td>
+      <td>${u.phone}</td>
+      <td><span class="badge ${u.isVip ? 'badge-vip' : 'badge-free'}">${u.isVip ? '👑 会员' : '免费'}</span></td>
+      <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('zh-CN') : '-'}</td>
+      <td>${u.inviteBy || '-'}</td>
+      <td>
+        <button class="btn-sm btn-sm-primary" onclick="grantVipToUser('${u.username}')">开通会员</button>
+        <button class="btn-sm btn-sm-danger" onclick="deleteUser('${u.username}')" style="margin-left:4px;">删除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function loadArticlesTable() {
+  const extra = Storage.get('extraArticles') || [];
+  let all = [...BLOG_DATA.articles, ...extra];
+  
+  // 搜索筛选
+  const searchTerm = document.getElementById('searchArticle')?.value?.trim().toLowerCase();
+  if (searchTerm) {
+    all = all.filter(a => a.title.toLowerCase().includes(searchTerm));
+  }
+  
+  // 分类筛选
+  const catFilter = document.getElementById('filterCat')?.value;
+  if (catFilter) {
+    all = all.filter(a => a.cat === catFilter);
+  }
+  
+  // 类型筛选
+  const typeFilter = document.getElementById('filterType')?.value;
+  if (typeFilter === 'vip') {
+    all = all.filter(a => a.vip);
+  } else if (typeFilter === 'free') {
+    all = all.filter(a => !a.vip);
+  }
+  
+  const countEl = document.getElementById('articleCount');
+  if (countEl) countEl.textContent = all.length;
+  const tbody = document.getElementById('articlesTable');
+  if (!tbody) return;
+  
+  if (all.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:20px;">暂无文章</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = all.map(a => `
+    <tr>
+      <td>${a.id}</td>
+      <td><strong>${a.title}</strong></td>
+      <td>${a.tag}</td>
+      <td>${formatNum(a.views)}</td>
+      <td>${a.likes || 0}</td>
+      <td>${a.date}</td>
+      <td><span class="badge ${a.vip ? 'badge-vip' : 'badge-free'}">${a.vip ? '👑 会员' : '免费'}</span></td>
+      <td>
+        <button class="btn-sm btn-sm-primary" onclick="openArticleEditor(${a.id})">编辑</button>
+        <a href="article.html?id=${a.id}" class="btn-sm" style="background:#f1f5f9;color:var(--text);" target="_blank">预览</a>
+        ${!BLOG_DATA.articles.find(ba => ba.id === a.id) ? `<button class="btn-sm btn-sm-danger" onclick="deleteArticle(${a.id})">删除</button>` : ''}
+      </td>
+    </tr>
+  `).join('');
+}
+
+function searchUsers() {
+  const val = document.getElementById('searchUser')?.value?.trim();
+  loadUsersTable(val);
+}
+
+function grantVipToUser(username) {
+  const users = Storage.get('users') || [];
+  const idx = users.findIndex(u => u.username === username);
+  if (idx > -1) {
+    users[idx].isVip = true;
+    Storage.set('users', users);
+    showAlert(`已为 ${username} 开通会员`, 'success');
+    loadDashboardData();
+    loadUsersTable();
+  }
+}
+
+function grantVip() {
+  const username = document.getElementById('vipUsername')?.value?.trim();
+  if (!username) { showAlert('请输入用户名', 'error'); return; }
+  grantVipToUser(username);
+}
+
+function deleteUser(username) {
+  if (!confirm(`确定删除用户 ${username}？`)) return;
+  const users = (Storage.get('users') || []).filter(u => u.username !== username);
+  Storage.set('users', users);
+  showAlert('用户已删除', 'success');
+  loadUsersTable();
+}
+
+function confirmPayment(btn) {
+  btn.textContent = '✓ 已开通';
+  btn.className = 'btn-sm btn-sm-success';
+  btn.disabled = true;
+  showAlert('已确认付款并开通会员', 'success');
+}
+
+// ==================== 文章编辑器功能 ====================
+
+function openArticleEditor(articleId = null) {
+  currentEditId = articleId;
+  const modal = document.getElementById('articleEditorModal');
+  const titleEl = document.getElementById('editorTitle');
+  
+  if (articleId) {
+    // 编辑模式
+    titleEl.textContent = '✏️ 编辑文章';
+    const all = [...BLOG_DATA.articles, ...(Storage.get('extraArticles') || [])];
+    const article = all.find(a => a.id == articleId);
+    if (article) {
+      document.getElementById('editArticleId').value = articleId;
+      document.getElementById('editTitle').value = article.title;
+      document.getElementById('editCat').value = article.cat;
+      document.getElementById('editVip').value = article.vip ? '1' : '0';
+      document.getElementById('editExcerpt').value = article.excerpt || '';
+      
+      // 加载正文
+      const contents = Storage.get('articleContents') || {};
+      document.getElementById('editContent').innerHTML = contents[articleId] || '';
+    }
+  } else {
+    // 新建模式
+    titleEl.textContent = '✍️ 新建文章';
+    document.getElementById('editArticleId').value = '';
+    document.getElementById('editTitle').value = '';
+    document.getElementById('editCat').value = 'tech';
+    document.getElementById('editVip').value = '0';
+    document.getElementById('editExcerpt').value = '';
+    document.getElementById('editContent').innerHTML = '';
+  }
+  
+  modal.classList.add('active');
+}
+
+function closeArticleEditor() {
+  document.getElementById('articleEditorModal').classList.remove('active');
+  currentEditId = null;
+}
+
+function saveArticle() {
+  const id = document.getElementById('editArticleId').value;
+  const title = document.getElementById('editTitle').value.trim();
+  const cat = document.getElementById('editCat').value;
+  const vip = document.getElementById('editVip').value === '1';
+  const excerpt = document.getElementById('editExcerpt').value.trim();
+  const content = document.getElementById('editContent').innerHTML;
+  
+  if (!title) { showAlert('请输入文章标题', 'error'); return; }
+  if (!content || content.length < 50) { showAlert('请输入文章内容（至少50字）', 'error'); return; }
+  
+  const extra = Storage.get('extraArticles') || [];
+  const contents = Storage.get('articleContents') || {};
+  
+  if (id) {
+    // 更新文章
+    const idx = extra.findIndex(a => a.id == id);
+    if (idx > -1) {
+      extra[idx] = {
+        ...extra[idx],
+        title, cat, vip,
+        excerpt: excerpt || content.replace(/<[^>]+>/g, '').substring(0, 100) + '...',
+        tag: cat === 'tech' ? '💻 技术' : cat === 'life' ? '🌱 生活' : cat === 'finance' ? '💰 理财' : '🧠 成长'
+      };
+      contents[id] = content;
+      showAlert('文章更新成功！', 'success');
+    }
+  } else {
+    // 新建文章
+    const newId = Date.now();
+    const newArt = {
+      id: newId, cat, vip,
+      title,
+      excerpt: excerpt || content.replace(/<[^>]+>/g, '').substring(0, 100) + '...',
+      date: new Date().toLocaleDateString('zh-CN').replace(/\//g, '-'),
+      views: 0, likes: 0,
+      cover: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=80',
+      tag: cat === 'tech' ? '💻 技术' : cat === 'life' ? '🌱 生活' : cat === 'finance' ? '💰 理财' : '🧠 成长'
+    };
+    extra.push(newArt);
+    contents[newId] = content;
+    showAlert('文章发布成功！', 'success');
+  }
+  
+  Storage.set('extraArticles', extra);
+  Storage.set('articleContents', contents);
+  closeArticleEditor();
+  loadArticlesTable();
+}
+
+function deleteArticle(id) {
+  if (!confirm('确定删除这篇文章？此操作不可恢复！')) return;
+  
+  let extra = Storage.get('extraArticles') || [];
+  extra = extra.filter(a => a.id != id);
+  Storage.set('extraArticles', extra);
+  
+  // 删除正文
+  const contents = Storage.get('articleContents') || {};
+  delete contents[id];
+  Storage.set('articleContents', contents);
+  
+  showAlert('文章已删除', 'success');
+  loadArticlesTable();
+}
+
+function searchArticles() {
+  loadArticlesTable();
+}
+
+function filterArticles() {
+  loadArticlesTable();
+}
+
+// ==================== 富文本编辑器功能 ====================
+
+function execCmd(command, value = null) {
+  document.execCommand(command, false, value);
+  document.getElementById('editContent').focus();
+}
+
+function insertImage() {
+  const url = prompt('请输入图片URL，或留空打开文件管理器：');
+  if (url === null) return;
+  if (url) {
+    execCmd('insertImage', url);
+  } else {
+    // 打开图片选择器
+    openImageSelector(true);
+  }
+}
+
+// ==================== 文件管理功能 ====================
+
+function initFileManager() {
+  // 初始化默认文件
+  const files = Storage.get('uploadedFiles');
+  if (!files) {
+    Storage.set('uploadedFiles', [
+      { id: 1, name: 'default-cover.jpg', url: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=80', type: 'image', size: '120KB' },
+      { id: 2, name: 'tech-bg.jpg', url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80', type: 'image', size: '85KB' },
+      { id: 3, name: 'life-bg.jpg', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80', type: 'image', size: '95KB' }
+    ]);
+  }
+}
+
+function refreshFileList() {
+  const files = Storage.get('uploadedFiles') || [];
+  const grid = document.getElementById('fileGrid');
+  const countEl = document.getElementById('fileCount');
+  
+  if (countEl) countEl.textContent = files.length;
+  if (!grid) return;
+  
+  if (files.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px;">暂无文件，请上传</p>';
+    return;
+  }
+  
+  grid.innerHTML = files.map(f => `
+    <div class="file-item ${selectedFiles.has(f.id) ? 'selected' : ''}" onclick="toggleFileSelect(${f.id})" data-id="${f.id}">
+      <img src="${f.url}" alt="${f.name}" onerror="this.src='https://via.placeholder.com/80?text=File'" />
+      <span>${f.name}</span>
+      <div class="file-actions" onclick="event.stopPropagation()">
+        <button onclick="copyFileUrl('${f.url}')" title="复制链接"><i class="fas fa-link"></i></button>
+        <button onclick="deleteFile(${f.id})" title="删除"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleFileSelect(id) {
+  if (selectedFiles.has(id)) {
+    selectedFiles.delete(id);
+  } else {
+    selectedFiles.add(id);
+  }
+  refreshFileList();
+}
+
+function handleFileUpload(event) {
+  const files = event.target.files;
+  if (!files.length) return;
+  
+  const uploadedFiles = Storage.get('uploadedFiles') || [];
+  
+  Array.from(files).forEach(file => {
+    if (!file.type.startsWith('image/')) {
+      showAlert(`跳过非图片文件: ${file.name}`, 'error');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const newFile = {
+        id: Date.now() + Math.random(),
+        name: file.name,
+        url: e.target.result,
+        type: 'image',
+        size: (file.size / 1024).toFixed(1) + 'KB'
+      };
+      uploadedFiles.push(newFile);
+      Storage.set('uploadedFiles', uploadedFiles);
+      refreshFileList();
+      showAlert(`上传成功: ${file.name}`, 'success');
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  event.target.value = '';
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+  const files = event.dataTransfer.files;
+  handleFileUpload({ target: { files } });
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+  document.getElementById('uploadZone').classList.add('dragover');
+}
+
+function handleDragLeave(event) {
+  event.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+}
+
+function copyFileUrl(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    showAlert('链接已复制到剪贴板', 'success');
+  });
+}
+
+function deleteFile(id) {
+  if (!confirm('确定删除这个文件？')) return;
+  let files = Storage.get('uploadedFiles') || [];
+  files = files.filter(f => f.id != id);
+  Storage.set('uploadedFiles', files);
+  selectedFiles.delete(id);
+  refreshFileList();
+  showAlert('文件已删除', 'success');
+}
+
+function deleteSelectedFiles() {
+  if (selectedFiles.size === 0) {
+    showAlert('请先选择要删除的文件', 'error');
+    return;
+  }
+  if (!confirm(`确定删除选中的 ${selectedFiles.size} 个文件？`)) return;
+  
+  let files = Storage.get('uploadedFiles') || [];
+  files = files.filter(f => !selectedFiles.has(f.id));
+  Storage.set('uploadedFiles', files);
+  selectedFiles.clear();
+  refreshFileList();
+  showAlert('文件已删除', 'success');
+}
+
+// ==================== 图片选择器 ====================
+
+function openImageSelector(forInsert = false) {
+  selectedImage = null;
+  const modal = document.getElementById('imageSelectorModal');
+  const grid = document.getElementById('imageSelectorGrid');
+  const files = Storage.get('uploadedFiles') || [];
+  
+  if (files.length === 0) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px;">暂无图片，请先上传</p>';
+  } else {
+    grid.innerHTML = files.map(f => `
+      <div class="file-item ${selectedImage === f.url ? 'selected' : ''}" onclick="selectImage('${f.url}')">
+        <img src="${f.url}" alt="${f.name}" />
+        <span>${f.name}</span>
+      </div>
+    `).join('');
+  }
+  
+  modal.dataset.forInsert = forInsert;
+  modal.classList.add('active');
+}
+
+function closeImageSelector() {
+  document.getElementById('imageSelectorModal').classList.remove('active');
+  selectedImage = null;
+}
+
+function selectImage(url) {
+  selectedImage = url;
+  document.querySelectorAll('#imageSelectorGrid .file-item').forEach(el => {
+    el.classList.toggle('selected', el.querySelector('img').src === url);
+  });
+}
+
+function confirmImageSelect() {
+  if (!selectedImage) {
+    showAlert('请先选择一张图片', 'error');
+    return;
+  }
+  
+  const modal = document.getElementById('imageSelectorModal');
+  const forInsert = modal.dataset.forInsert === 'true';
+  
+  if (forInsert) {
+    execCmd('insertImage', selectedImage);
+  }
+  
+  closeImageSelector();
+}
+
+// ==================== 评论管理 ====================
+
+function loadComments() {
+  const filter = document.getElementById('commentFilter')?.value || 'all';
+  const tbody = document.getElementById('commentsTable');
+  if (!tbody) return;
+  
+  const comments = Storage.get('comments') || {};
+  let allComments = [];
+  
+  Object.entries(comments).forEach(([articleId, articleComments]) => {
+    articleComments.forEach(c => {
+      const article = BLOG_DATA.articles.find(a => a.id == articleId);
+      allComments.push({
+        ...c,
+        articleId,
+        articleTitle: article?.title || '未知文章'
+      });
+    });
+  });
+  
+  if (filter !== 'all') {
+    allComments = allComments.filter(c => c.status === filter);
+  }
+  
+  if (allComments.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:20px;">暂无评论</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = allComments.map(c => `
+    <tr>
+      <td><strong>${c.nickname}</strong></td>
+      <td>${c.articleTitle}</td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.content}</td>
+      <td>${c.date}</td>
+      <td><span class="badge ${c.status === 'approved' ? 'badge-active' : 'badge-pending'}">${c.status === 'approved' ? '已通过' : '待审核'}</span></td>
+      <td>
+        ${c.status !== 'approved' ? `<button class="btn-sm btn-sm-success" onclick="approveComment(${c.id})">通过</button>` : ''}
+        <button class="btn-sm btn-sm-danger" onclick="deleteComment(${c.id})">删除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function approveComment(id) {
+  const comments = Storage.get('comments') || {};
+  Object.values(comments).forEach(articleComments => {
+    const c = articleComments.find(x => x.id === id);
+    if (c) c.status = 'approved';
+  });
+  Storage.set('comments', comments);
+  loadComments();
+  showAlert('评论已通过', 'success');
+}
+
+function deleteComment(id) {
+  if (!confirm('确定删除这条评论？')) return;
+  const comments = Storage.get('comments') || {};
+  Object.keys(comments).forEach(articleId => {
+    comments[articleId] = comments[articleId].filter(c => c.id !== id);
+  });
+  Storage.set('comments', comments);
+  loadComments();
+  showAlert('评论已删除', 'success');
+}
+
+// ==================== 设置保存 ====================
+
+function saveSettings() {
+  const settings = {
+    siteTitle: document.getElementById('siteTitle').value,
+    siteDesc: document.getElementById('siteDesc').value,
+    siteKeywords: document.getElementById('siteKeywords').value,
+    blogName: document.getElementById('blogName').value,
+    wechatId: document.getElementById('wechatId').value,
+    phoneNum: document.getElementById('phoneNum').value,
+    monthlyPrice: document.getElementById('monthlyPrice').value,
+    yearlyPrice: document.getElementById('yearlyPrice').value,
+    commissionRate: document.getElementById('commissionRate').value
+  };
+  Storage.set('blogSettings', settings);
+  showAlert('设置已保存', 'success');
+}
+
+// ==================== 自动采集管理 ====================
+
+function loadCollectorData() {
+  const articles = Storage.get('dailyFocusArticles') || [];
+  const tbody = document.getElementById('collectorTable');
+  const collectedEl = document.getElementById('collectedToday');
+  const publishedEl = document.getElementById('publishedToday');
+  
+  if (collectedEl) collectedEl.textContent = articles.length;
+  
+  // 统计已发布的
+  const extra = Storage.get('extraArticles') || [];
+  const publishedCount = extra.filter(a => a.isCollected).length;
+  if (publishedEl) publishedEl.textContent = publishedCount;
+  
+  if (!tbody) return;
+  
+  if (articles.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:20px;">暂无采集数据，点击"重新采集"获取今日焦点</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = articles.map(a => {
+    const isPublished = extra.some(e => e.title === a.title);
+    return `
+      <tr>
+        <td><strong>${a.title}</strong></td>
+        <td>${a.source}</td>
+        <td><span class="badge ${a.cat === 'tech' ? 'badge-free' : a.cat === 'finance' ? 'badge-vip' : 'badge-pending'}">${a.cat}</span></td>
+        <td>${new Date(a.collectedAt).toLocaleString('zh-CN')}</td>
+        <td><span class="badge ${isPublished ? 'badge-active' : 'badge-pending'}">${isPublished ? '已发布' : '待发布'}</span></td>
+        <td>
+          ${!isPublished ? `<button class="btn-sm btn-sm-primary" onclick="publishCollectedArticle('${a.id}')">发布</button>` : '<button class="btn-sm" style="background:#f1f5f9;color:var(--text);" disabled>已发布</button>'}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function refreshCollector() {
+  if (typeof ArticleCollector !== 'undefined') {
+    ArticleCollector.refresh();
+    loadCollectorData();
+    showAlert('已重新采集今日焦点', 'success');
+  } else {
+    showAlert('采集功能加载中，请稍后再试', 'error');
+  }
+}
+
+function publishCollectedArticle(focusId) {
+  const articles = Storage.get('dailyFocusArticles') || [];
+  const article = articles.find(a => a.id === focusId);
+  if (!article) return;
+  
+  if (typeof ArticleCollector !== 'undefined') {
+    ArticleCollector.publishToBlog(article);
+    loadCollectorData();
+    showAlert('文章已发布', 'success');
+  }
+}
+
+function publishAllCollected() {
+  const articles = Storage.get('dailyFocusArticles') || [];
+  const extra = Storage.get('extraArticles') || [];
+  
+  let publishedCount = 0;
+  articles.forEach(article => {
+    const isPublished = extra.some(e => e.title === article.title);
+    if (!isPublished && typeof ArticleCollector !== 'undefined') {
+      ArticleCollector.publishToBlog(article);
+      publishedCount++;
+    }
+  });
+  
+  loadCollectorData();
+  showAlert(`成功发布 ${publishedCount} 篇文章`, 'success');
+}
+
+function saveCollectorSettings() {
+  const settings = {
+    collectTime: document.getElementById('collectTime').value,
+    collectCount: document.getElementById('collectCount').value,
+    autoPublish: document.getElementById('autoPublish').checked,
+    needReview: document.getElementById('needReview').checked
+  };
+  Storage.set('collectorSettings', settings);
+  showAlert('采集设置已保存', 'success');
+}
+</script>
+</body>
+</html>

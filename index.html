@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>高绪武博客 | 技术、理财与成长 - 个人独立博客</title>
+  <meta name="description" content="高绪武的个人博客，分享技术干货、理财投资心得、个人成长感悟。每晚21:00更新，提供会员专属深度内容。" />
+  <meta name="keywords" content="高绪武,技术博客,理财博客,个人成长,程序员,投资心得" />
+  <meta name="author" content="高绪武" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://gaoxuwu-blog.vercel.app/" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="高绪武博客 | 技术、理财与成长" />
+  <meta property="og:description" content="分享技术干货、理财投资心得、个人成长感悟的个人博客" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gaoxuwu-blog.vercel.app/" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="高绪武博客 | 技术、理财与成长" />
+  <meta name="twitter:description" content="分享技术干货、理财投资心得、个人成长感悟的个人博客" />
+  
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== 深色模式 ===== */
+    [data-theme="dark"] {
+      --text: #e2e8f0;
+      --text-light: #94a3b8;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --shadow: 0 4px 24px rgba(0,0,0,.4);
+      --shadow-hover: 0 8px 40px rgba(108,99,255,.25);
+    }
+    [data-theme="dark"] body { background: #0f172a; color: #e2e8f0; }
+    [data-theme="dark"] #navbar { background: rgba(15,23,42,0.95); border-color: #334155; }
+    [data-theme="dark"] .article-card { background: #1e293b; border-color: #334155; }
+    [data-theme="dark"] .categories { background: #1e293b; border-color: #334155; }
+    [data-theme="dark"] .vip-section { background: #0f172a; }
+    [data-theme="dark"] .plan-card { background: #1e293b; border-color: #334155; }
+    [data-theme="dark"] .about-card { background: #1e293b; border-color: #334155; }
+    [data-theme="dark"] .modal-box { background: #1e293b; }
+    [data-theme="dark"] .pay-method { background: #0f172a; border-color: #334155; }
+    [data-theme="dark"] .hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #1a0f2e 100%); }
+    [data-theme="dark"] .announcement-bar { background: #1e1b4b; border-color: #3730a3; }
+    [data-theme="dark"] .hot-item { background: #1e293b; }
+    [data-theme="dark"] .hot-item:hover { background: #293548; }
+
+    /* ===== 公告栏 ===== */
+    .announcement-bar {
+      background: linear-gradient(90deg, #f0f4ff, #fdf2ff);
+      border-bottom: 1px solid #e0e7ff;
+      padding: 10px 0;
+      overflow: hidden;
+    }
+    .announcement-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .ann-badge {
+      flex-shrink: 0;
+      background: var(--primary);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+    .ann-scroll {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .ann-scroll-inner {
+      display: flex;
+      gap: 48px;
+      animation: marquee 30s linear infinite;
+      white-space: nowrap;
+    }
+    .ann-scroll-inner span {
+      font-size: .88rem;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .ann-scroll-inner span:hover { color: var(--primary); }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ann-close {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      font-size: .9rem;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color .2s;
+    }
+    .ann-close:hover { color: var(--text); }
+
+    /* ===== 暗色模式切换按钮 ===== */
+    .theme-toggle {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all .2s;
+      color: var(--text);
+    }
+    .theme-toggle:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    [data-theme="dark"] .theme-toggle { background: #334155; border-color: #475569; color: #e2e8f0; }
+
+    /* ===== 热门排行 ===== */
+    .hot-section {
+      padding: 60px 0;
+      background: white;
+    }
+    [data-theme="dark"] .hot-section { background: #1e293b; }
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 40px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) { .two-col-grid { grid-template-columns: 1fr; } }
+    .hot-rank { }
+    .hot-rank-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+    }
+    .hot-list { display: flex; flex-direction: column; gap: 10px; }
+    .hot-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      border: 1px solid transparent;
+    }
+    .hot-item:hover { border-color: var(--primary); transform: translateX(4px); }
+    .hot-num {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .hot-num.top1 { background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; }
+    .hot-num.top2 { background: linear-gradient(135deg,#94a3b8,#64748b); color: white; }
+    .hot-num.top3 { background: linear-gradient(135deg,#d97706,#b45309); color: white; }
+    .hot-num.other { background: #e2e8f0; color: var(--text-light); }
+    .hot-info { flex: 1; min-width: 0; }
+    .hot-info h5 {
+      font-size: .9rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hot-info span { font-size: .78rem; color: var(--text-light); }
+    .hot-tag {
+      font-size: .76rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+      background: #f5f3ff;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* ===== 每日更新提示 ===== */
+    .daily-tip {
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .9rem;
+    }
+    [data-theme="dark"] .daily-tip { background: #064e3b22; border-color: #065f4644; }
+    .daily-tip i { color: #059669; font-size: 1.1rem; flex-shrink: 0; }
+    .daily-tip strong { color: #047857; }
+    [data-theme="dark"] .daily-tip strong { color: #34d399; }
+
+    /* ===== 滚动进入动画 ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-in-delay-1 { transition-delay: .1s; }
+    .fade-in-delay-2 { transition-delay: .2s; }
+    .fade-in-delay-3 { transition-delay: .3s; }
+
+    /* ===== 打字光标 ===== */
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 0.75s step-end infinite;
+      color: var(--primary);
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ===== 数字滚动 ===== */
+    .count-num { display: inline-block; }
+
+    /* ===== 特色文章大卡片 ===== */
+    .featured-article {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      transition: all .3s;
+      min-height: 280px;
+    }
+    .featured-article:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+    .featured-article .article-thumb {
+      height: 100%;
+      min-height: 280px;
+    }
+    .featured-article .article-body {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .featured-article .article-title {
+      font-size: 1.3rem;
+      line-height: 1.5;
+    }
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg,var(--primary),var(--secondary));
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: .78rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 768px) {
+      .featured-article { grid-template-columns: 1fr; }
+      .featured-article .article-thumb { height: 200px; min-height: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 公告滚动栏 -->
+<div class="announcement-bar" id="annBar">
+  <div class="announcement-inner">
+    <span class="ann-badge">📢 公告</span>
+    <div class="ann-scroll">
+      <div class="ann-scroll-inner" id="annText">
+        <span>🎉 博客全新改版上线！更多精品内容持续更新中...</span>
+        <span>💎 年度会员限时优惠 ¥298，立即开通享全部权益！</span>
+        <span>🚀 推广计划上线：邀请好友注册，佣金30%实时到账！</span>
+        <span>📝 每晚21:00准时发布新文章，记得关注！</span>
+        <span>🎉 博客全新改版上线！更多精品内容持续更新中...</span>
+        <span>💎 年度会员限时优惠 ¥298，立即开通享全部权益！</span>
+        <span>🚀 推广计划上线：邀请好友注册，佣金30%实时到账！</span>
+        <span>📝 每晚21:00准时发布新文章，记得关注！</span>
+      </div>
+    </div>
+    <button class="ann-close" onclick="document.getElementById('annBar').style.display='none'">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<!-- 顶部导航 -->
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo">
+      <span class="logo-icon">✦</span>
+      <a href="index.html">高绪武 Blog</a>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="articles.html">文章</a>
+      <a href="vip.html">会员专区</a>
+      <a href="about.html">关于</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="切换深色模式">🌙</button>
+      <a href="login.html" class="btn-login" id="loginBtn">登录</a>
+      <a href="register.html" class="btn-register">注册</a>
+      <div class="user-menu hidden" id="userMenu">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu" class="avatar" id="avatarImg" />
+        <div class="dropdown" id="userDropdown">
+          <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> 控制台</a>
+          <a href="vip.html"><i class="fas fa-crown"></i> 会员中心</a>
+          <a href="promote.html"><i class="fas fa-gift"></i> 邀请有礼 <span style="font-size:.7rem;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 6px;border-radius:10px;">赚</span></a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+        </div>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</header>
+
+<!-- 英雄区 -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-particle" id="particles"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge" style="animation: fadeInDown .6s ease both;">🚀 每晚更新 · 持续创作</div>
+    <h1 class="hero-title" style="animation: fadeInUp .7s ease .1s both;">
+      高绪武的<br/><span class="gradient-text typing-cursor" id="heroTyping">数字花园</span>
+    </h1>
+    <p class="hero-subtitle" style="animation: fadeInUp .7s ease .2s both;">
+      分享技术、思考与生活的点滴<br/>每一篇文章都是一次深度探索
+    </p>
+    <div class="hero-actions" style="animation: fadeInUp .7s ease .3s both;">
+      <a href="articles.html" class="btn-primary">
+        <i class="fas fa-book-open"></i> 开始阅读
+      </a>
+      <a href="promote.html" class="btn-secondary">
+        <i class="fas fa-coins"></i> 推广赚钱
+      </a>
+    </div>
+    <div class="hero-stats" style="animation: fadeInUp .7s ease .4s both;">
+      <div class="stat">
+        <span class="num count-num" data-target="128">0</span>
+        <span class="label">篇文章</span>
+      </div>
+      <div class="stat">
+        <span class="num count-num" data-target="5600">0</span>
+        <span class="label">读者</span>
+      </div>
+      <div class="stat">
+        <span class="num">¥38</span>
+        <span class="label">月会员</span>
+      </div>
+      <div class="stat">
+        <span class="num count-num" data-target="30">0</span><span class="num">%</span>
+        <span class="label">推广佣金</span>
+      </div>
+    </div>
+  </div>
+  <!-- 波浪底部 -->
+  <div style="position:absolute;bottom:-1px;left:0;right:0;line-height:0;">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style="width:100%;height:60px;">
+      <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--bg)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- 分类标签 -->
+<section class="categories">
+  <div class="container">
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="all">全部</button>
+      <button class="cat-tab" data-cat="tech">💻 技术</button>
+      <button class="cat-tab" data-cat="life">🌱 生活</button>
+      <button class="cat-tab" data-cat="finance">💰 理财</button>
+      <button class="cat-tab" data-cat="growth">🧠 成长</button>
+      <button class="cat-tab" data-cat="vip">👑 会员专属</button>
+    </div>
+  </div>
+</section>
+
+<!-- 文章列表 + 热榜 -->
+<section class="hot-section">
+  <div class="container">
+    <div class="two-col-grid">
+      <!-- 左：文章列表 -->
+      <div>
+        <div class="section-header fade-in">
+          <h2>最新文章</h2>
+          <a href="articles.html" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <!-- 每日更新提示 -->
+        <div class="daily-tip fade-in fade-in-delay-1" id="dailyTip">
+          <i class="fas fa-bell"></i>
+          <span>📅 今日 <strong id="todayDate">--</strong> 已发布 <strong>1</strong> 篇新文章，晚上 21:00 还有新内容！</span>
+        </div>
+        <div class="articles-grid" id="articleGrid">
+          <!-- 文章卡片由JS动态生成 -->
+        </div>
+      </div>
+      <!-- 右：热门排行 -->
+      <div class="fade-in fade-in-delay-2">
+        <div class="hot-rank-title">
+          <i class="fas fa-fire" style="color:#ef4444;"></i> 热门文章排行
+        </div>
+        <div class="hot-list" id="hotList">
+          <!-- 由JS生成 -->
+        </div>
+        <!-- 作者简介卡片 -->
+        <div style="margin-top:28px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:20px;padding:24px;color:white;text-align:center;">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu&backgroundColor=b6e3f4" style="width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.4);margin-bottom:12px;" />
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:6px;">高绪武</div>
+          <div style="font-size:.85rem;opacity:.85;margin-bottom:16px;">技术 · 理财 · 成长 博主</div>
+          <a href="about.html" style="display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:white;padding:8px 20px;border-radius:20px;font-size:.85rem;font-weight:600;backdrop-filter:blur(4px);">了解我 →</a>
+        </div>
+        <!-- 会员引导 -->
+        <div style="margin-top:20px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:20px;padding:24px;color:white;">
+          <div style="font-size:1rem;font-weight:700;margin-bottom:8px;">👑 解锁全部内容</div>
+          <div style="font-size:.85rem;opacity:.75;margin-bottom:16px;">加入会员，畅读所有高质量原创文章</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="vip.html" onclick="handleVipPurchase('monthly');return false;" style="flex:1;text-align:center;background:var(--primary);color:white;padding:10px;border-radius:12px;font-size:.85rem;font-weight:600;">月度 ¥38</a>
+            <a href="vip.html" onclick="handleVipPurchase('yearly');return false;" style="flex:1;text-align:center;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:10px;border-radius:12px;font-size:.85rem;font-weight:600;">年度 ¥298</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 每日焦点 -->
+<section class="daily-focus fade-in">
+  <div class="container">
+    <div class="section-header">
+      <h2><i class="fas fa-bolt" style="color:#f59e0b;"></i> 每日焦点</h2>
+      <p style="font-size:.9rem;color:var(--text-light);">自动采集全网热门文章，去重筛选后呈现</p>
+    </div>
+    <div class="focus-grid" id="focusGrid">
+      <!-- 由JS动态加载 -->
+      <div class="focus-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>正在加载今日焦点...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.daily-focus { padding: 60px 0; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+[data-theme="dark"] .daily-focus { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+.focus-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.focus-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--border); transition: all .3s; cursor: pointer; }
+.focus-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+[data-theme="dark"] .focus-card { background: #1e293b; border-color: #334155; }
+.focus-source { display: inline-block; font-size: .75rem; color: var(--primary); background: #f5f3ff; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
+.focus-card h4 { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 12px; color: var(--text); }
+.focus-card p { font-size: .88rem; color: var(--text-light); line-height: 1.6; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.focus-meta { display: flex; align-items: center; gap: 16px; font-size: .8rem; color: var(--text-light); }
+.focus-meta span { display: flex; align-items: center; gap: 4px; }
+.focus-loading { grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-light); }
+.focus-loading i { font-size: 2rem; margin-bottom: 16px; display: block; }
+</style>
+
+<!-- 会员区域 -->
+<section class="vip-section fade-in">
+  <div class="container">
+    <div class="section-header center">
+      <h2>🏆 会员专区</h2>
+      <p>解锁全部优质内容，加速成长</p>
+    </div>
+    <div class="vip-plans">
+      <div class="plan-card fade-in fade-in-delay-1">
+        <div class="plan-name">免费版</div>
+        <div class="plan-price">¥0<span>/月</span></div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 阅读免费文章</li>
+          <li><i class="fas fa-check"></i> 参与评论互动</li>
+          <li><i class="fas fa-times"></i> 会员专属内容</li>
+          <li><i class="fas fa-times"></i> 视频教程</li>
+          <li><i class="fas fa-times"></i> 源码下载</li>
+        </ul>
+        <a href="register.html" class="btn-plan free">免费注册</a>
+      </div>
+      <div class="plan-card featured fade-in fade-in-delay-2">
+        <div class="plan-badge">最受欢迎</div>
+        <div class="plan-name">月度会员</div>
+        <div class="plan-price">¥38<span>/月</span></div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 全部免费内容</li>
+          <li><i class="fas fa-check"></i> 会员专属文章</li>
+          <li><i class="fas fa-check"></i> 视频教程全集</li>
+          <li><i class="fas fa-check"></i> 源码下载</li>
+          <li><i class="fas fa-times"></i> 一对一咨询</li>
+        </ul>
+        <a href="vip.html" class="btn-plan vip" onclick="handleVipPurchase('monthly');return false;">立即订阅</a>
+      </div>
+      <div class="plan-card fade-in fade-in-delay-3">
+        <div class="plan-name">年度会员</div>
+        <div class="plan-price">¥298<span>/年</span></div>
+        <div class="plan-save">省 ¥158</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 全部月度权益</li>
+          <li><i class="fas fa-check"></i> 年度专属报告</li>
+          <li><i class="fas fa-check"></i> 一对一咨询 x2</li>
+          <li><i class="fas fa-check"></i> 优先回复评论</li>
+          <li><i class="fas fa-check"></i> 加入专属社群</li>
+        </ul>
+        <a href="vip.html" class="btn-plan yearly" onclick="handleVipPurchase('yearly');return false;">立即订阅</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 关于作者 -->
+<section class="about-section fade-in">
+  <div class="container">
+    <div class="about-card">
+      <div class="about-avatar">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu&backgroundColor=b6e3f4" alt="高绪武" />
+      </div>
+      <div class="about-content">
+        <h3>关于博主</h3>
+        <h4>高绪武 <span class="author-tag">✦ 博主</span></h4>
+        <p>热爱技术与生活，专注分享有价值的内容。在这里你能找到技术干货、成长感悟、理财思路，以及对这个世界的独特观察。每晚坚持输出，只为给你带来真正有用的内容。</p>
+        <div class="author-social">
+          <a href="#" title="微信"><i class="fab fa-weixin"></i></a>
+          <a href="#" title="微博"><i class="fab fa-weibo"></i></a>
+          <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+          <a href="#" title="邮件"><i class="fas fa-envelope"></i></a>
+        </div>
+        <a href="about.html" class="btn-about">了解更多</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>✦ 高绪武 Blog</h4>
+        <p>一个专注于分享技术、思考与生活的个人博客。每晚21:00准时更新。</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-weixin"></i></a>
+          <a href="#"><i class="fab fa-weibo"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>快速导航</h4>
+        <ul>
+          <li><a href="index.html">首页</a></li>
+          <li><a href="articles.html">全部文章</a></li>
+          <li><a href="vip.html">会员专区</a></li>
+          <li><a href="promote.html">推广赚钱</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>分类</h4>
+        <ul>
+          <li><a href="#">💻 技术文章</a></li>
+          <li><a href="#">🌱 生活随笔</a></li>
+          <li><a href="#">💰 理财投资</a></li>
+          <li><a href="#">🧠 成长感悟</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>联系我</h4>
+        <ul>
+          <li><i class="fas fa-phone"></i> 15312636073</li>
+          <li><i class="fab fa-weixin"></i> gaoxuwu</li>
+          <li><i class="fas fa-envelope"></i> gaoxuwu@blog.com</li>
+        </ul>
+        <div class="wechat-qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=WeChat:gaoxuwu" alt="微信二维码" />
+          <span>扫码加微信</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 高绪武博客 · 保留所有权利</p>
+      <p>付费咨询请联系微信：gaoxuwu | 手机：15312636073</p>
+    </div>
+  </div>
+</footer>
+
+<!-- 付费弹窗 -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('payModal')">×</button>
+    <div class="modal-header">
+      <i class="fas fa-crown"></i>
+      <h3>升级会员</h3>
+    </div>
+    <div class="modal-body">
+      <p class="pay-tip">请通过以下方式联系博主付款，付款后发送截图即可激活：</p>
+      <div class="pay-methods">
+        <div class="pay-method">
+          <i class="fab fa-weixin" style="color:#07C160"></i>
+          <span>微信：<strong>gaoxuwu</strong></span>
+        </div>
+        <div class="pay-method">
+          <i class="fas fa-phone" style="color:#1890ff"></i>
+          <span>电话：<strong>15312636073</strong></span>
+        </div>
+      </div>
+      <div class="pay-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=微信:gaoxuwu,手机:15312636073,会员开通请联系" alt="联系二维码" />
+        <p>扫描二维码添加微信</p>
+      </div>
+      <p class="pay-note">✅ 支持微信/支付宝转账，付款后发凭证截图即时开通</p>
+    </div>
+  </div>
+</div>
+
+<!-- 回到顶部 -->
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script src="js/app.js"></script>
+<script>
+// ===== 深色模式 =====
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+});
+
+// ===== 数字计数动画 =====
+function animateCount(el) {
+  const target = parseInt(el.dataset.target);
+  const duration = 1500;
+  const start = performance.now();
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.round(eased * target);
+    if (target >= 1000) {
+      el.textContent = (value / 1000).toFixed(1) + 'k';
+    } else {
+      el.textContent = value;
+    }
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ===== 滚动进入动画 =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // 计数动画
+      if (entry.target.classList.contains('hero-stats')) {
+        entry.target.querySelectorAll('.count-num').forEach(animateCount);
+      }
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// 英雄区数字计数（直接触发）
+setTimeout(() => {
+  document.querySelectorAll('.count-num').forEach(animateCount);
+}, 500);
+
+// ===== 今日日期 =====
+const now = new Date();
+const dateStr = `${now.getMonth()+1}月${now.getDate()}日`;
+const todayEl = document.getElementById('todayDate');
+if (todayEl) todayEl.textContent = dateStr;
+
+// ===== 热榜渲染 =====
+function renderHotList() {
+  const hotEl = document.getElementById('hotList');
+  if (!hotEl) return;
+  const sorted = [...BLOG_DATA.articles].sort((a,b) => b.views - a.views);
+  const numClasses = ['top1','top2','top3','other','other','other'];
+  hotEl.innerHTML = sorted.map((a, i) => `
+    <div class="hot-item" onclick="goToArticle(${a.id})">
+      <div class="hot-num ${numClasses[i] || 'other'}">${i+1}</div>
+      <div class="hot-info">
+        <h5>${a.title}</h5>
+        <span><i class="fas fa-eye" style="margin-right:4px"></i>${(a.views/1000).toFixed(1)}k 阅读</span>
+      </div>
+      <span class="hot-tag">${a.tag.split(' ')[0]}</span>
+    </div>
+  `).join('');
+}
+renderHotList();
+
+// ===== 每日焦点文章加载 =====
+function loadDailyFocus() {
+  const grid = document.getElementById('focusGrid');
+  if (!grid) return;
+  
+  // 从localStorage获取采集的文章
+  const focusArticles = Storage.get('dailyFocusArticles') || [];
+  
+  if (focusArticles.length === 0) {
+    // 显示默认提示
+    grid.innerHTML = `
+      <div class="focus-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+        <i class="fas fa-robot" style="font-size:3rem;color:var(--primary);margin-bottom:16px;"></i>
+        <h4 style="margin-bottom:8px;">每日焦点采集系统</h4>
+        <p style="color:var(--text-light);">系统将在每天自动采集全网热门文章<br>去重筛选后呈现给您</p>
+        <p style="font-size:.8rem;color:var(--text-light);margin-top:16px;">
+          <i class="fas fa-clock"></i> 下次采集：每天 06:00
+        </p>
+      </div>
+    `;
+    return;
+  }
+  
+  // 渲染文章
+  grid.innerHTML = focusArticles.map(article => `
+    <div class="focus-card" onclick="goToArticle(${article.id})">
+      <span class="focus-source">${article.source}</span>
+      <h4>${article.title}</h4>
+      <p>${article.summary}</p>
+      <div class="focus-meta">
+        <span><i class="far fa-clock"></i> ${article.time}</span>
+        <span><i class="far fa-eye"></i> ${article.views}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 页面加载时执行
+loadDailyFocus();
+
+// ===== 打字动画 =====
+const phrases = ['数字花园', '知识宝库', '成长之路', '思想殿堂'];
+let phraseIdx = 0, charIdx = 0, isDeleting = false;
+const typingEl = document.getElementById('heroTyping');
+function typeEffect() {
+  if (!typingEl) return;
+  const phrase = phrases[phraseIdx];
+  if (!isDeleting) {
+    typingEl.textContent = phrase.slice(0, charIdx + 1);
+    charIdx++;
+    if (charIdx === phrase.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+  } else {
+    typingEl.textContent = phrase.slice(0, charIdx - 1);
+    charIdx--;
+    if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+  }
+  setTimeout(typeEffect, isDeleting ? 80 : 120);
+}
+setTimeout(typeEffect, 1500);
+</script>
+
+<style>
+@keyframes fadeInDown {
+  from { opacity:0; transform:translateY(-20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+</style>
+</body>
+</html>

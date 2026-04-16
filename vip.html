@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会员专区 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="articles.html">文章</a>
+      <a href="vip.html" class="active">会员专区</a>
+      <a href="about.html">关于</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-login" id="loginBtn">登录</a>
+      <a href="register.html" class="btn-register">注册</a>
+      <div class="user-menu hidden" id="userMenu">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu" class="avatar" id="avatarImg" />
+        <div class="dropdown">
+          <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> 控制台</a>
+          <a href="vip.html"><i class="fas fa-crown"></i> 会员中心</a>
+          <a href="promote.html"><i class="fas fa-gift"></i> 邀请有礼 <span style="font-size:.7rem;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 6px;border-radius:10px;">赚</span></a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+        </div>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</header>
+
+<!-- VIP Hero -->
+<section style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);padding:120px 0 60px;text-align:center;color:white;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&q=60') center/cover;opacity:.08;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div style="font-size:3.5rem;margin-bottom:16px;">👑</div>
+    <h1 style="font-size:2.5rem;font-weight:700;margin-bottom:12px;">会员专区</h1>
+    <p style="color:rgba(255,255,255,.75);font-size:1.05rem;max-width:500px;margin:0 auto 32px;">解锁全部优质内容，获得专属服务<br/>加速你的成长与收益</p>
+    <div style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
+      <div style="text-align:center;color:white;">
+        <div style="font-size:1.8rem;font-weight:700;">50+</div>
+        <div style="font-size:.85rem;color:rgba(255,255,255,.6);">会员专属文章</div>
+      </div>
+      <div style="text-align:center;color:white;">
+        <div style="font-size:1.8rem;font-weight:700;">20+</div>
+        <div style="font-size:.85rem;color:rgba(255,255,255,.6);">视频教程</div>
+      </div>
+      <div style="text-align:center;color:white;">
+        <div style="font-size:1.8rem;font-weight:700;">∞</div>
+        <div style="font-size:.85rem;color:rgba(255,255,255,.6);">源码下载</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 套餐 -->
+<section class="vip-section" style="padding-top:60px;">
+  <div class="container">
+    <div class="section-header center">
+      <h2>选择你的方案</h2>
+      <p>所有方案均支持随时取消，不满意可联系退款</p>
+    </div>
+    <div class="vip-plans" style="margin-top:40px;">
+      <div class="plan-card">
+        <div class="plan-name">免费版</div>
+        <div class="plan-price">¥0<span>/月</span></div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 阅读全部免费文章</li>
+          <li><i class="fas fa-check"></i> 参与评论互动</li>
+          <li><i class="fas fa-check"></i> 推广赚佣金</li>
+          <li><i class="fas fa-times"></i> 会员专属文章</li>
+          <li><i class="fas fa-times"></i> 视频教程</li>
+          <li><i class="fas fa-times"></i> 源码下载</li>
+          <li><i class="fas fa-times"></i> 一对一咨询</li>
+        </ul>
+        <a href="register.html" class="btn-plan free">免费注册</a>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">最受欢迎</div>
+        <div class="plan-name">月度会员</div>
+        <div class="plan-price">¥38<span>/月</span></div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 全部免费内容</li>
+          <li><i class="fas fa-check"></i> 50+ 会员专属文章</li>
+          <li><i class="fas fa-check"></i> 20+ 视频教程</li>
+          <li><i class="fas fa-check"></i> 源码下载</li>
+          <li><i class="fas fa-check"></i> 优先客服响应</li>
+          <li><i class="fas fa-times"></i> 一对一咨询</li>
+          <li><i class="fas fa-times"></i> 专属社群</li>
+        </ul>
+        <a href="#" class="btn-plan vip" onclick="handleVipPurchase('monthly')">立即订阅 ¥38/月</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">年度会员</div>
+        <div class="plan-price">¥298<span>/年</span></div>
+        <div class="plan-save">相当于每月¥24.8，省¥158</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 全部月度权益</li>
+          <li><i class="fas fa-check"></i> 年度专属深度报告</li>
+          <li><i class="fas fa-check"></i> 一对一咨询 ×2次</li>
+          <li><i class="fas fa-check"></i> 加入专属微信群</li>
+          <li><i class="fas fa-check"></i> 优先回复所有问题</li>
+          <li><i class="fas fa-check"></i> 新课优先体验</li>
+          <li><i class="fas fa-check"></i> 推广佣金提升至35%</li>
+        </ul>
+        <a href="#" class="btn-plan yearly" onclick="handleVipPurchase('yearly')">立即订阅 ¥298/年</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 会员专属内容预览 -->
+<section style="padding:60px 0;background:white;">
+  <div class="container">
+    <div class="section-header center">
+      <h2>👑 会员专属内容</h2>
+      <p>以下是部分会员内容，开通后全部解锁</p>
+    </div>
+    <div class="articles-grid" style="margin-top:36px;">
+      <div class="article-card lock-overlay">
+        <img class="article-thumb" src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80" />
+        <div class="article-body">
+          <div class="article-meta"><span class="article-tag vip">👑 会员专属</span><span>2026-04-03</span></div>
+          <h3 class="article-title">用AI打造个人SaaS产品：3天上线完整实战</h3>
+          <p class="article-excerpt">从零到上线，GPT-4+Cursor+Vercel，完整复盘每一个决策...</p>
+        </div>
+      </div>
+      <div class="article-card lock-overlay">
+        <img class="article-thumb" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80" />
+        <div class="article-body">
+          <div class="article-meta"><span class="article-tag vip">👑 会员专属</span><span>2026-03-28</span></div>
+          <h3 class="article-title">我的投资组合2025年度复盘：年化收益23%</h3>
+          <p class="article-excerpt">完整仓位配置、加减仓记录、踩过的坑，全部数据公开...</p>
+        </div>
+      </div>
+      <div class="article-card lock-overlay">
+        <img class="article-thumb" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80" />
+        <div class="article-body">
+          <div class="article-meta"><span class="article-tag vip">👑 会员专属</span><span>2026-03-20</span></div>
+          <h3 class="article-title">副业收入从0到1w+：我走过的每一步</h3>
+          <p class="article-excerpt">不靠运气，完全可复制的路径，适合有全职工作的上班族...</p>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="#" onclick="handleVipPurchase('monthly')" style="display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:var(--primary);color:white;border-radius:28px;font-weight:600;font-size:1rem;">
+        👑 开通会员，解锁全部内容
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 常见问题 -->
+<section style="padding:60px 0;background:#fafafa;">
+  <div class="container" style="max-width:700px;">
+    <div class="section-header center">
+      <h2>常见问题</h2>
+    </div>
+    <div style="margin-top:36px;display:flex;flex-direction:column;gap:12px;">
+      <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:20px 24px;">
+        <summary style="font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          如何开通会员？<span>+</span>
+        </summary>
+        <p style="color:var(--text-light);font-size:.9rem;margin-top:12px;line-height:1.7;">
+          点击"立即订阅"按钮，添加博主微信（gaoxuwu）或拨打手机（15312636073），通过微信/支付宝转账，发送付款截图，博主5分钟内手动开通。
+        </p>
+      </details>
+      <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:20px 24px;">
+        <summary style="font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          会员权益什么时候生效？<span>+</span>
+        </summary>
+        <p style="color:var(--text-light);font-size:.9rem;margin-top:12px;line-height:1.7;">
+          付款后，博主收到截图验证后5分钟内开通，工作日15分钟内，节假日最长2小时。
+        </p>
+      </details>
+      <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:20px 24px;">
+        <summary style="font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          可以退款吗？<span>+</span>
+        </summary>
+        <p style="color:var(--text-light);font-size:.9rem;margin-top:12px;line-height:1.7;">
+          开通后7天内，如果对内容不满意，可联系博主全额退款（已阅读内容超过20篇除外）。
+        </p>
+      </details>
+      <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:20px 24px;">
+        <summary style="font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          年度会员的一对一咨询怎么用？<span>+</span>
+        </summary>
+        <p style="color:var(--text-light);font-size:.9rem;margin-top:12px;line-height:1.7;">
+          开通后添加博主微信，约定时间进行30分钟语音通话，可咨询技术、副业、理财等任何问题。
+        </p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 高绪武博客</p>
+      <p>付费咨询：微信 gaoxuwu | 电话 15312636073</p>
+    </div>
+  </div>
+</footer>
+
+<!-- 付费弹窗 -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('payModal')">×</button>
+    <div class="modal-header">
+      <i class="fas fa-crown"></i>
+      <h3 id="payModalTitle">开通会员</h3>
+    </div>
+    <div class="modal-body">
+      <div id="payPriceInfo" style="text-align:center;margin-bottom:20px;padding:16px;background:#f5f3ff;border-radius:12px;">
+        <div style="font-size:2rem;font-weight:700;color:var(--primary);" id="payPrice">¥38</div>
+        <div style="color:var(--text-light);font-size:.88rem;" id="payDesc">月度会员</div>
+      </div>
+      <p class="pay-tip">请通过以下方式联系博主付款，付款后发送截图即可激活：</p>
+      <div class="pay-methods">
+        <div class="pay-method">
+          <i class="fab fa-weixin" style="color:#07C160"></i>
+          <span>微信：<strong>gaoxuwu</strong></span>
+        </div>
+        <div class="pay-method">
+          <i class="fas fa-phone" style="color:#1890ff"></i>
+          <span>电话：<strong>15312636073</strong></span>
+        </div>
+      </div>
+      <div class="pay-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=微信:gaoxuwu,手机:15312636073,会员开通请联系" alt="联系二维码" />
+        <p>扫码添加微信</p>
+      </div>
+      <p class="pay-note">✅ 支持微信/支付宝，付款后发截图5分钟内开通</p>
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+<script src="js/app.js"></script>
+<script>
+function handleVipPurchase(plan) {
+  event && event.preventDefault();
+  const priceEl = document.getElementById('payPrice');
+  const descEl = document.getElementById('payDesc');
+  const titleEl = document.getElementById('payModalTitle');
+  if (plan === 'yearly') {
+    if (priceEl) priceEl.textContent = '¥298';
+    if (descEl) descEl.textContent = '年度会员（12个月）';
+    if (titleEl) titleEl.textContent = '开通年度会员';
+  } else {
+    if (priceEl) priceEl.textContent = '¥38';
+    if (descEl) descEl.textContent = '月度会员（1个月）';
+    if (titleEl) titleEl.textContent = '开通月度会员';
+  }
+  openModal('payModal');
+}
+</script>
+</body>
+</html>

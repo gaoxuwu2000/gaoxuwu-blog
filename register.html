@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>注册 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="articles.html">文章</a>
+      <a href="vip.html">会员专区</a>
+      <a href="about.html">关于</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-login">登录</a>
+    </div>
+  </div>
+</header>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:2.5rem;margin-bottom:8px;">🚀</div>
+      <h2>创建账号</h2>
+      <p class="auth-sub">加入高绪武博客，开启阅读之旅</p>
+    </div>
+
+    <!-- 邀请人显示 -->
+    <div class="invite-field" id="inviteInfo" style="display:none;">
+      <i class="fas fa-gift" style="color:var(--primary)"></i>
+      <span>你是通过好友 <strong id="refField">-</strong> 的邀请链接来的，注册后他将获得奖励 🎉</span>
+    </div>
+
+    <form onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label><i class="fas fa-smile" style="color:var(--primary);margin-right:6px;"></i>昵称</label>
+        <input type="text" id="nickname" placeholder="你想让别人怎么称呼你" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-user" style="color:var(--primary);margin-right:6px;"></i>用户名</label>
+        <input type="text" id="regUsername" placeholder="设置登录用户名（字母/数字）" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-phone" style="color:var(--primary);margin-right:6px;"></i>手机号</label>
+        <input type="tel" id="phone" placeholder="请输入手机号" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock" style="color:var(--primary);margin-right:6px;"></i>密码</label>
+        <input type="password" id="regPassword" placeholder="至少6位密码" />
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:.85rem;cursor:pointer;color:var(--text-light);">
+          <input type="checkbox" id="agreeTerms" style="margin-top:3px;" required />
+          <span>我已阅读并同意 <a href="#" style="color:var(--primary)">《用户协议》</a> 和 <a href="#" style="color:var(--primary)">《隐私政策》</a></span>
+        </label>
+      </div>
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-user-plus"></i> 立即注册
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      已有账号？<a href="login.html">立即登录</a>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const ref = getUrlParam('ref');
+  if (ref) {
+    const inviteInfo = document.getElementById('inviteInfo');
+    const refField = document.getElementById('refField');
+    if (inviteInfo && refField) {
+      inviteInfo.style.display = 'flex';
+      refField.textContent = ref;
+    }
+  }
+});
+</script>
+</body>
+</html>

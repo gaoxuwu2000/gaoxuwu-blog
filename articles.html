@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全部文章 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="articles.html" class="active">文章</a>
+      <a href="vip.html">会员专区</a>
+      <a href="about.html">关于</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-login" id="loginBtn">登录</a>
+      <a href="register.html" class="btn-register">注册</a>
+      <div class="user-menu hidden" id="userMenu">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu" class="avatar" id="avatarImg" />
+        <div class="dropdown">
+          <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> 控制台</a>
+          <a href="vip.html"><i class="fas fa-crown"></i> 会员中心</a>
+          <a href="promote.html"><i class="fas fa-gift"></i> 邀请有礼 <span style="font-size:.7rem;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 6px;border-radius:10px;">赚</span></a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+        </div>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</header>
+
+<div style="padding:100px 0 40px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);">
+  <div class="container">
+    <h1 style="font-size:2rem;font-weight:700;margin-bottom:8px;font-family:'Noto Serif SC',serif;">全部文章</h1>
+    <p style="color:var(--text-light);">共 <strong id="totalCount">6</strong> 篇文章，持续更新中</p>
+    <!-- 搜索 -->
+    <div style="margin-top:20px;display:flex;gap:10px;max-width:500px;">
+      <input type="text" id="searchInput" placeholder="🔍 搜索文章标题..." oninput="filterArticles()" style="flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:28px;font-size:.93rem;outline:none;font-family:inherit;" />
+    </div>
+  </div>
+</div>
+
+<section class="categories" style="position:static;">
+  <div class="container">
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="all">全部</button>
+      <button class="cat-tab" data-cat="tech">💻 技术</button>
+      <button class="cat-tab" data-cat="life">🌱 生活</button>
+      <button class="cat-tab" data-cat="finance">💰 理财</button>
+      <button class="cat-tab" data-cat="growth">🧠 成长</button>
+      <button class="cat-tab" data-cat="vip">👑 会员专属</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:40px 0 80px;">
+  <div class="container">
+    <div class="articles-grid" id="articleGrid"></div>
+    <div id="noResult" style="display:none;text-align:center;padding:60px;color:var(--text-light);">
+      <i class="fas fa-search" style="font-size:2.5rem;opacity:.3;margin-bottom:12px;display:block;"></i>
+      <p>没有找到相关文章</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 高绪武博客</p>
+      <p>付费咨询：微信 gaoxuwu | 电话 15312636073</p>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('payModal')">×</button>
+    <div class="modal-header"><i class="fas fa-crown"></i><h3>升级会员</h3></div>
+    <div class="modal-body">
+      <p class="pay-tip">该文章为会员专属，联系博主开通：</p>
+      <div class="pay-methods">
+        <div class="pay-method"><i class="fab fa-weixin" style="color:#07C160"></i><span>微信：<strong>gaoxuwu</strong></span></div>
+        <div class="pay-method"><i class="fas fa-phone" style="color:#1890ff"></i><span>电话：<strong>15312636073</strong></span></div>
+      </div>
+      <div class="pay-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=微信:gaoxuwu" alt="二维码" /><p>扫码添加微信</p></div>
+      <p class="pay-note">✅ 月度¥38 | 年度¥298，付款截图即开通</p>
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+<script src="js/app.js"></script>
+<script>
+let currentCat = 'all';
+let currentSearch = '';
+
+function filterArticles() {
+  currentSearch = document.getElementById('searchInput')?.value?.toLowerCase() || '';
+  renderFiltered();
+}
+
+function renderFiltered() {
+  const extra = Storage.get('extraArticles') || [];
+  const all = [...BLOG_DATA.articles, ...extra];
+  let filtered = all;
+  if (currentCat !== 'all') {
+    if (currentCat === 'vip') filtered = filtered.filter(a => a.vip);
+    else filtered = filtered.filter(a => a.cat === currentCat);
+  }
+  if (currentSearch) filtered = filtered.filter(a => a.title.toLowerCase().includes(currentSearch) || a.excerpt.toLowerCase().includes(currentSearch));
+
+  const countEl = document.getElementById('totalCount');
+  if (countEl) countEl.textContent = filtered.length;
+
+  const grid = document.getElementById('articleGrid');
+  const noResult = document.getElementById('noResult');
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    if (noResult) noResult.style.display = 'block';
+    return;
+  }
+  if (noResult) noResult.style.display = 'none';
+  grid.innerHTML = filtered.map(a => `
+    <div class="article-card ${a.vip ? 'lock-overlay' : ''}" onclick="goToArticle(${a.id})">
+      <img class="article-thumb" src="${a.cover}" loading="lazy" />
+      <div class="article-body">
+        <div class="article-meta"><span class="article-tag ${a.vip ? 'vip' : ''}">${a.tag}</span><span>${a.date}</span></div>
+        <h3 class="article-title">${a.title}</h3>
+        <p class="article-excerpt">${a.excerpt}</p>
+        <div class="article-footer">
+          <div class="article-stats">
+            <span><i class="fas fa-eye"></i> ${formatNum(a.views)}</span>
+            <span><i class="fas fa-heart"></i> ${formatNum(a.likes)}</span>
+          </div>
+          <span style="color:var(--primary);font-weight:500;font-size:.85rem">阅读全文 →</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderFiltered();
+  document.querySelectorAll('.cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentCat = tab.dataset.cat;
+      renderFiltered();
+    });
+  });
+});
+</script>
+</body>
+</html>

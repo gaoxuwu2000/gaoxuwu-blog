@@ -1,0 +1,13 @@
+{
+  "name": "gaoxuwu-blog",
+  "version": "1.0.0",
+  "description": "高绪武个人博客 - 技术、理财与成长",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site - no build needed'",
+    "start": "npx serve . -l $PORT"
+  },
+  "keywords": ["blog", "personal", "tech", "finance"],
+  "author": "高绪武",
+  "license": "MIT"
+}

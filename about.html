@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>关于我 | 高绪武博客</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header id="navbar">
+  <div class="nav-container">
+    <div class="logo"><span class="logo-icon">✦</span><a href="index.html">GaoXuWu Blog</a></div>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="articles.html">文章</a>
+      <a href="vip.html">会员专区</a>
+      <a href="about.html" class="active">关于</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-login" id="loginBtn">登录</a>
+      <a href="register.html" class="btn-register">注册</a>
+      <div class="user-menu hidden" id="userMenu">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu" class="avatar" id="avatarImg" />
+        <div class="dropdown">
+          <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> 控制台</a>
+          <a href="vip.html"><i class="fas fa-crown"></i> 会员中心</a>
+          <a href="promote.html"><i class="fas fa-gift"></i> 邀请有礼 <span style="font-size:.7rem;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 6px;border-radius:10px;">赚</span></a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- About Hero -->
+<section style="padding:120px 0 60px;background:linear-gradient(135deg,#f5f3ff,#ede9fe,#fce7f3);text-align:center;">
+  <div class="container">
+    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=gaoxuwu&backgroundColor=b6e3f4" style="width:120px;height:120px;border-radius:50%;border:4px solid var(--primary);box-shadow:0 8px 32px rgba(108,99,255,.25);margin-bottom:20px;" />
+    <h1 style="font-size:2rem;font-weight:700;margin-bottom:8px;font-family:'Noto Serif SC',serif;">高绪武</h1>
+    <p style="color:var(--text-light);margin-bottom:20px;">独立创作者 · 技术爱好者 · 理财践行者</p>
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <a href="#" style="width:40px;height:40px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#07C160;box-shadow:0 2px 12px rgba(0,0,0,.1);font-size:1.1rem;"><i class="fab fa-weixin"></i></a>
+      <a href="#" style="width:40px;height:40px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#E6162D;box-shadow:0 2px 12px rgba(0,0,0,.1);font-size:1.1rem;"><i class="fab fa-weibo"></i></a>
+      <a href="#" style="width:40px;height:40px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#24292e;box-shadow:0 2px 12px rgba(0,0,0,.1);font-size:1.1rem;"><i class="fab fa-github"></i></a>
+    </div>
+  </div>
+</section>
+
+<section style="padding:60px 0;">
+  <div class="container" style="max-width:800px;">
+
+    <!-- 个人介绍 -->
+    <div style="background:white;border-radius:20px;padding:40px;border:1px solid var(--border);margin-bottom:28px;box-shadow:0 2px 16px rgba(0,0,0,.04);">
+      <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:16px;font-family:'Noto Serif SC',serif;">👋 关于我</h2>
+      <p style="color:#334155;line-height:1.9;margin-bottom:16px;">大家好，我是高绪武。这里是我的数字花园，记录我的技术探索、生活感悟与财富思考。</p>
+      <p style="color:#334155;line-height:1.9;margin-bottom:16px;">我相信优质的内容是有价值的，而这个博客就是我对这份信念最真实的践行。每一篇文章我都力求做到深度与实用兼具，而不是简单的搬运与堆砌。</p>
+      <p style="color:#334155;line-height:1.9;">如果你从这里获得了启发，我希望你能订阅会员支持原创，或者参与推广计划，一起把有价值的内容传播给更多人。</p>
+    </div>
+
+    <!-- 数据 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
+      <div style="background:white;border-radius:14px;padding:20px;text-align:center;border:1px solid var(--border);">
+        <div style="font-size:1.8rem;font-weight:700;color:var(--primary);font-family:'Inter',sans-serif;">128</div>
+        <div style="font-size:.82rem;color:var(--text-light);margin-top:4px;">原创文章</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:20px;text-align:center;border:1px solid var(--border);">
+        <div style="font-size:1.8rem;font-weight:700;color:#f59e0b;font-family:'Inter',sans-serif;">5.6k</div>
+        <div style="font-size:.82rem;color:var(--text-light);margin-top:4px;">读者关注</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:20px;text-align:center;border:1px solid var(--border);">
+        <div style="font-size:1.8rem;font-weight:700;color:#059669;font-family:'Inter',sans-serif;">156</div>
+        <div style="font-size:.82rem;color:var(--text-light);margin-top:4px;">会员用户</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:20px;text-align:center;border:1px solid var(--border);">
+        <div style="font-size:1.8rem;font-weight:700;color:#db2777;font-family:'Inter',sans-serif;">3年</div>
+        <div style="font-size:.82rem;color:var(--text-light);margin-top:4px;">持续创作</div>
+      </div>
+    </div>
+
+    <!-- 联系我 -->
+    <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:20px;padding:40px;text-align:center;">
+      <h2 style="color:white;font-size:1.3rem;margin-bottom:12px;font-family:'Noto Serif SC',serif;">📬 联系我</h2>
+      <p style="color:rgba(255,255,255,.75);margin-bottom:28px;">无论是会员开通、内容合作、商务咨询，都欢迎联系我</p>
+      <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:18px 28px;color:white;text-align:center;">
+          <i class="fab fa-weixin" style="font-size:1.6rem;color:#07C160;margin-bottom:8px;display:block;"></i>
+          <strong>gaoxuwu</strong>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px;">微信号</div>
+        </div>
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:18px 28px;color:white;text-align:center;">
+          <i class="fas fa-phone" style="font-size:1.6rem;color:#60a5fa;margin-bottom:8px;display:block;"></i>
+          <strong>15312636073</strong>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px;">手机 / 微信</div>
+        </div>
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:18px 28px;color:white;text-align:center;">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=WeChat:gaoxuwu&color=ffffff&bgcolor=1a1a2e" style="border-radius:6px;margin-bottom:4px;" />
+          <div style="font-size:.8rem;color:rgba(255,255,255,.6);">扫码加微信</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 高绪武博客</p>
+      <p>付费咨询：微信 gaoxuwu | 电话 15312636073</p>
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+<script src="js/app.js"></script>
+</body>
+</html>
